@@ -1,4 +1,1 @@
-LOAD R3 34;
-#egebgj
-MOV R3 1627;#egebgj
-ADD R5 R6 R4;
+RLD

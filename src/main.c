@@ -13,6 +13,9 @@
 #define NOT_A_KEYWORD -1
 #define VALID_CHAR_NUMBER 42
 #define SEPERATIR_CHAR_NUMBER 6
+#define PREFIX_CHAR_NUMBER 5
+
+// ENUMS
 
 enum TokenType{
 	NONE,
@@ -26,14 +29,12 @@ enum TokenType{
 	INSTRUCTION_END
 };
 
+// STRUCTS
+
 typedef struct Token {
 		enum TokenType type;
 		int data;
 }Token;
-
-typedef struct MCInstruction{
-		char binary[16];
-} MCInstruction;
 
 typedef struct CharList{
 	char *data;
@@ -51,6 +52,7 @@ typedef struct PosFile{
 	int charactere;
 } PosFile;
 
+// CONST DATAS
 
 const char VALID_CHAR[] = { 
 	'A','B','C','D','E','F',
@@ -61,15 +63,21 @@ const char VALID_CHAR[] = {
 	'4','5','6','7','8','9',
 	' ', '#', '@', '	', ';',
 	'\n'
-	};
+};
 
 const char SEPERATOR_CHAR[] = {
 	' ', '#', '@', '	', ';','\n'
-	};
+};
+
+const char PREFIX_CHAR[] = {
+	'R', '@', 'M', 'I', 'O'
+};
 
 const unsigned int ARGUMENT_NUMBER[] = {
 	0, 3, 3, 2, 2, 3, 3, 3, 2, 3, 3, 3, 3, 
-	3, 3, 2, 2, 1, 2, 2, 2, 1, 0, 1};
+	3, 3, 2, 2, 1, 2, 2, 2, 1, 0, 1
+};
+
 const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
 	{NONE},
 	{REGISTER_ADRESS, REGISTER_ADRESS, REGISTER_ADRESS},
@@ -95,8 +103,8 @@ const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
 	{REGISTER_RAM_ADRESS},
 	{NONE},
 	{REGISTER_RAM_ADRESS}
-
 };
+
 const char KEYWORD_LIST[][24] ={
 	{"NOP"}, {"ADD"}, {"SUB"},
 	{"SHIFT_R"}, {"SHIFT_L"}, {"AND"},
@@ -106,7 +114,9 @@ const char KEYWORD_LIST[][24] ={
 	{"IFGOTO"}, {"JUMP"}, {"OUT"},
 	{"IN"}, {"MOV"}, {"PUSH"},
 	{"POP"}, {"S_STACK"}
-	};
+};
+
+// FUNCTIONS
 
 char toLower(char c){
 	if(c >= 65 && c <= 90){
@@ -115,18 +125,6 @@ char toLower(char c){
 	else{
 		return c;
 	}
-}
-
-bool* toBinary(unsigned int ui, size_t binary_size){
-	bool *output = malloc(sizeof(bool)*binary_size);
-	unsigned int ui_ = ui;
-	for(int i = binary_size-1; i >= 0 ; i--){
-		if(ui_- (int) pow(2,i) >= 0){
-			output[i] = true;
-			ui_ -= (int) pow(2,i);
-		}
-	}
-	return output;
 }
 
 int findKeyword(char *s){
@@ -159,17 +157,34 @@ bool isSeparatorChar(char c){
 	return output;
 }
 
-int fileSize(FILE *file){
-	int size = 0;
+bool isPrefixChar(char c){
+	bool output = false;
+	for(int i = 0; i < PREFIX_CHAR_NUMBER; i++){
+		if(PREFIX_CHAR[i] == c){
+			output = true;
+		}
+	}
+	return output;
+}
+
+size_t fileSize(FILE *file){
+	size_t size = 0;
 	char content_file_line[100];
 	while(fgets(content_file_line, sizeof(content_file_line), file)) {
-		for(char *c = content_file_line; *c ; c++){
-			size++;
-		}
-		size += 2;
+		size += strlen(content_file_line);
 	}
+	// For the '\0' at the end
+	size++;
 	fseek(file, 0, SEEK_SET);
 	return size;
+}
+
+bool isNumber(char *s, int size){
+	bool output = true;
+	for(char *c = s; *c ; c++){
+		if(*c < '0' || *c > '9' ){output = false;}
+	}
+	return output;
 }
 
 void compilationError(int i, char *word, char charactere, PosFile position_file, int extra_data){
@@ -189,19 +204,18 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		printf("EXPECTED : %d\n", ARGUMENT_NUMBER[findKeyword(word)]);
 		printf("RECEIVED : %d\n", extra_data);
 		break;
+
+		case 4:
+		printf("\'%c\' is not a valid prefix for an argument\n", charactere);
+		printf("VALID ONES :\n");
+		printf("	VALUES : 0, 1, 2, 3, 4, 5, 6, 7, 8, 9\n");
+		printf("	ADRESS : R, @, M, I, O\n");
+		break;
 	}
 	
 	printf("LINE : %d\n", position_file.line);
 	printf("CHAR : %d\n", position_file.charactere);
 	exit(1);
-}
-
-bool isNumber(char *s, int size){
-	bool output = true;
-	for(char *c = s; *c ; c++){
-		if(*c < 48 || *c >57 ){output = false;}
-	}
-	return output;
 }
 
 TokenList lexer(
@@ -211,25 +225,39 @@ TokenList lexer(
 	size_t max_argument_lenght
 	){
 	
-	CharList content_file = {malloc(fileSize(file)), fseek(file, 0, SEEK_END)};
+	// +1 is for the ' ' that we add at the end of the file
+	CharList content_file = {malloc(fileSize(file)+1), fileSize(file)+1};
 	if(!content_file.data){
 		printf("ERROR : standarized_file allocation failed !\n");
+		exit(1);
 	}
 	
 	TokenList token_list = {malloc(fileSize(file)), fileSize(file)};
 	if(!token_list.data){
 		printf("ERROR : standarized_file allocation failed !\n");
+		exit(1);
 	}
 	
 	content_file.data[0] = '\0';
 	char content_file_line[100];
 	//Get all the file
 	while(fgets(content_file_line, sizeof(content_file_line), file)) {
-		for(char *c = content_file_line; *c ; c++){
-			if(*c == '\r'){*c = ' ';}
+		if((strlen(content_file.data) + strlen(content_file_line)) >= content_file.size){
+			printf("ERROR : content_file overflow !\n");
+			exit(1);
 		}
 		strcat(content_file.data, content_file_line);
 	}
+	size_t len = strlen(content_file.data);
+	if(strlen(content_file.data)+1 >= content_file.size){
+		printf("ERROR : content_file overflow !\n");
+		exit(1);
+	}
+	else{
+		content_file.data[len] = ' ';
+		content_file.data[len+1] = '\0';
+	}
+
 	fseek(file, 0, SEEK_SET);
 	
 	printf("Lexer begin\n");
@@ -238,11 +266,12 @@ TokenList lexer(
 	size_t token_index = 0;
 	size_t argument_count = 0;
 	bool on_word = false;
+	bool last_instruction_close = false;
 	bool anotation = false;
 	char word[max_argument_lenght];
 	word[0] = '\0';
-	char currentKeyword[max_argument_lenght];
-	currentKeyword[0] = '\0';
+	char current_keyword[max_argument_lenght];
+	current_keyword[0] = '\0';
 	PosFile position_file = {1,1};
 	PosFile last_end_word = {0,0};
 	PosFile beginning_word = {0,0};
@@ -269,19 +298,26 @@ TokenList lexer(
 				// If it's an ARGUMENT
 				if(findKeyword(word) == NOT_A_KEYWORD){
 					printf("1.1 | ");
+
+					// If the first char of the word is not a prefix or a number
+					if((word[0] < '0' || word[0] > '9') && !isPrefixChar(word[0])){
+						printf("1.1.2 | ");
+						compilationError(4, word, word[0], beginning_word, 0);
+					}
+
 					argument_count++;
 				}
 				// If it's a KEYWORD
 				else{ 
 					printf("1.2 | ");
 					// If an instruction was called without being closed
-					if(currentKeyword[0] != '\0'){
+					if(last_instruction_close == false){
 						printf("1.2.1 | ");
 						compilationError(2, word, ' ', last_end_word, 0);
 					} 
 					else{
 						printf("1.2.2 | ");
-						strcpy(currentKeyword, word);
+						strcpy(current_keyword, word);
 					}
 				}
 				last_end_word = position_file;
@@ -294,6 +330,10 @@ TokenList lexer(
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
 				printf("3 | ");
+				if(!on_word){
+					beginning_word = position_file;
+				}
+				last_instruction_close = false;
 				word[word_index] = *c;
 				word_index++;
 				on_word = true;
@@ -302,10 +342,11 @@ TokenList lexer(
 			switch(*c){
 				// End of an instruction
 				case ';':
-				if(argument_count != ARGUMENT_NUMBER[findKeyword(currentKeyword)]){
-					compilationError(3, currentKeyword, *c, position_file, argument_count);
+				if(argument_count != ARGUMENT_NUMBER[findKeyword(current_keyword)]){
+					compilationError(3, current_keyword, *c, position_file, argument_count);
 				}
-				currentKeyword[0] = '\0';
+				last_instruction_close = true;
+				current_keyword[0] = '\0';
 				argument_count = 0;
 				break;
 
@@ -321,22 +362,25 @@ TokenList lexer(
 		// If we change line
 		if(*c == '\n'){
 			position_file.line++;
-			position_file.charactere = 0;
+			position_file.charactere = 1;
 			anotation = false;
 		}
-
-		position_file.charactere++;
+		else{
+			position_file.charactere++;
+		}
 		printf("\n");
 		printf("WORD : \"%s\"\n", word);
-		printf("C_WORD : \"%s\"\n", currentKeyword);
+		printf("C_WORD : \"%s\"\n", current_keyword);
 		printf("-----------------\n");
 
 	}
+	if(last_instruction_close == false){ printf("4 | \n"); compilationError(2, word, ' ', last_end_word, 0); }
 	
 	free(content_file.data);
 	return token_list;
 }
 
+// MAIN
 
 int main(){
     FILE *KCM;
