@@ -179,9 +179,10 @@ size_t fileSize(FILE *file){
 	return size;
 }
 
-bool isNumber(char *s, int size){
+bool isNumber(char *s){
 	bool output = true;
 	for(char *c = s; *c ; c++){
+		printf("rgferg \"%c\"\n", *c);
 		if(*c < '0' || *c > '9' ){output = false;}
 	}
 	return output;
@@ -211,6 +212,14 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		printf("	VALUES : 0, 1, 2, 3, 4, 5, 6, 7, 8, 9\n");
 		printf("	ADRESS : R, @, M, I, O\n");
 		break;
+
+		case 5:
+		printf("\'%s\' is not an instruction keyword\n", word);
+		break;
+
+		case 6:
+		printf("\'%s\' is not an adress or a value \n", word);
+		break;
 	}
 	
 	printf("LINE : %d\n", position_file.line);
@@ -232,7 +241,7 @@ TokenList lexer(
 		exit(1);
 	}
 	
-	TokenList token_list = {malloc(fileSize(file)), fileSize(file)};
+	TokenList token_list = {malloc(max_instruction_number * max_argument_number * sizeof(enum TokenType)), max_instruction_number * max_argument_number};
 	if(!token_list.data){
 		printf("ERROR : standarized_file allocation failed !\n");
 		exit(1);
@@ -266,7 +275,7 @@ TokenList lexer(
 	size_t token_index = 0;
 	size_t argument_count = 0;
 	bool on_word = false;
-	bool last_instruction_close = false;
+	bool last_instruction_close = true;
 	bool anotation = false;
 	char word[max_argument_lenght];
 	word[0] = '\0';
@@ -298,11 +307,18 @@ TokenList lexer(
 				// If it's an ARGUMENT
 				if(findKeyword(word) == NOT_A_KEYWORD){
 					printf("1.1 | ");
+					if(last_instruction_close){
+						compilationError(5, word, ' ', beginning_word, 0);
+					}
 
 					// If the first char of the word is not a prefix or a number
 					if((word[0] < '0' || word[0] > '9') && !isPrefixChar(word[0])){
 						printf("1.1.2 | ");
 						compilationError(4, word, word[0], beginning_word, 0);
+					}
+					
+					if(!isNumber((word + 1))){
+						compilationError(6, word, ' ', beginning_word, 0);
 					}
 
 					argument_count++;
@@ -315,10 +331,12 @@ TokenList lexer(
 						printf("1.2.1 | ");
 						compilationError(2, word, ' ', last_end_word, 0);
 					} 
-					else{
-						printf("1.2.2 | ");
-						strcpy(current_keyword, word);
-					}
+
+					last_instruction_close = false;
+					token_list.data[token_index].type = KEYWORD;
+					token_list.data[token_index].data = findKeyword(word);
+					strcpy(current_keyword, word);
+					
 				}
 				last_end_word = position_file;
 			}
@@ -333,7 +351,6 @@ TokenList lexer(
 				if(!on_word){
 					beginning_word = position_file;
 				}
-				last_instruction_close = false;
 				word[word_index] = *c;
 				word_index++;
 				on_word = true;
@@ -373,6 +390,7 @@ TokenList lexer(
 		printf("C_WORD : \"%s\"\n", current_keyword);
 		printf("-----------------\n");
 
+		token_index++;
 	}
 	if(last_instruction_close == false){ printf("4 | \n"); compilationError(2, word, ' ', last_end_word, 0); }
 	
