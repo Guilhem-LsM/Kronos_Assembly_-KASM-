@@ -12,21 +12,21 @@
 #define KEYWORD_NUMBER 24
 #define NOT_A_KEYWORD -1
 #define VALID_CHAR_NUMBER 42
-#define SEPERATIR_CHAR_NUMBER 6
+#define SEPERATIR_CHAR_NUMBER 5
 #define PREFIX_CHAR_NUMBER 5
 
 // ENUMS
 
 enum TokenType{
-	NONE,
-	KEYWORD, 
+	NONE = 0,
+	KEYWORD = 1, 
 	REGISTER_ADRESS, 
+	RAM_ADRESS, 
 	REGISTER_RAM_ADRESS, 
 	VALUE, 
 	MEMORY_PROGRAM_ADRESS,
 	OUTPUT_ADRESS,
-	INPUT_ADRESS,
-	INSTRUCTION_END
+	INPUT_ADRESS
 };
 
 // STRUCTS
@@ -66,7 +66,7 @@ const char VALID_CHAR[] = {
 };
 
 const char SEPERATOR_CHAR[] = {
-	' ', '#', '@', '	', ';','\n'
+	' ', '#', '	', ';','\n'
 };
 
 const char PREFIX_CHAR[] = {
@@ -97,7 +97,7 @@ const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
 	{REGISTER_RAM_ADRESS, VALUE},
 	{REGISTER_ADRESS, MEMORY_PROGRAM_ADRESS},
 	{MEMORY_PROGRAM_ADRESS},
-	{OUTPUT_ADRESS, REGISTER_ADRESS},
+	{OUTPUT_ADRESS, REGISTER_RAM_ADRESS},
 	{INPUT_ADRESS, REGISTER_RAM_ADRESS},
 	{REGISTER_RAM_ADRESS, REGISTER_RAM_ADRESS},
 	{REGISTER_RAM_ADRESS},
@@ -105,7 +105,7 @@ const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
 	{REGISTER_RAM_ADRESS}
 };
 
-const char KEYWORD_LIST[][24] ={
+const char KEYWORD_LIST[24][8] = {
 	{"NOP"}, {"ADD"}, {"SUB"},
 	{"SHIFT_R"}, {"SHIFT_L"}, {"AND"},
 	{"OR"}, {"WOR"}, {"NOT"}, {"EQUAL"},
@@ -114,6 +114,18 @@ const char KEYWORD_LIST[][24] ={
 	{"IFGOTO"}, {"JUMP"}, {"OUT"},
 	{"IN"}, {"MOV"}, {"PUSH"},
 	{"POP"}, {"S_STACK"}
+};
+
+const char TOKEN_TYPE_NAME_TABLE[9][25] = {
+	{"NONE"},
+	{"KEYWORD"},
+	{"REGISTER_ADRESS"},
+	{"RAM_ADRESS"},
+	{"REGISTER_RAM_ADRESS"},
+	{"VALUE"},
+	{"MEMORY_PROGRAM_ADRESS"},
+	{"OUTPUT_ADRESS"},
+	{"INPUT_ADRESS"}
 };
 
 // FUNCTIONS
@@ -182,13 +194,14 @@ size_t fileSize(FILE *file){
 bool isNumber(char *s){
 	bool output = true;
 	for(char *c = s; *c ; c++){
-		printf("rgferg \"%c\"\n", *c);
 		if(*c < '0' || *c > '9' ){output = false;}
 	}
 	return output;
 }
 
-void compilationError(int i, char *word, char charactere, PosFile position_file, int extra_data){
+
+
+void compilationError(int i, char *word, char charactere, PosFile position_file, int extra_data_1, int extra_data_2){
 	printf("\n");
 	printf("COMPILATION ERROR %d\n", i);
 	switch(i){
@@ -201,9 +214,9 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		break;
 
 		case 3:
-		printf("Wrong number of argument on instruction \"%s\"\n", word);
+		printf("Arguments missing\n");
 		printf("EXPECTED : %d\n", ARGUMENT_NUMBER[findKeyword(word)]);
-		printf("RECEIVED : %d\n", extra_data);
+		printf("RECEIVED : %d\n", extra_data_1);
 		break;
 
 		case 4:
@@ -219,6 +232,24 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 
 		case 6:
 		printf("\'%s\' is not an adress or a value \n", word);
+		break;
+
+		case 7:
+		printf("Wrong type of argument\n");
+		printf("EXPECTED : %s\n", TOKEN_TYPE_NAME_TABLE[ARGUMENT_ARCHITECTURE[extra_data_1][extra_data_2]]);
+		printf("RECEIVED : %s\n", word);
+		printf("\n");
+		break;
+
+		case 8:
+		printf("Too many argument\n");
+		printf("EXPECTED : %d\n", ARGUMENT_NUMBER[findKeyword(word)]);
+		printf("RECEIVED : %d\n", extra_data_1);
+		printf("\n");
+		break;
+
+		case 9 :
+		printf("\';\' unexpected\n");
 		break;
 	}
 	
@@ -241,7 +272,7 @@ TokenList lexer(
 		exit(1);
 	}
 	
-	TokenList token_list = {malloc(max_instruction_number * max_argument_number * sizeof(enum TokenType)), max_instruction_number * max_argument_number};
+	TokenList token_list = {malloc(max_instruction_number * max_argument_number * sizeof(Token)), max_instruction_number * max_argument_number};
 	if(!token_list.data){
 		printf("ERROR : standarized_file allocation failed !\n");
 		exit(1);
@@ -268,9 +299,10 @@ TokenList lexer(
 	}
 
 	fseek(file, 0, SEEK_SET);
-	
 	printf("Lexer begin\n");
 	
+	int is_adress = 0;
+	int current_keyword_index = 0;
 	size_t word_index = 0;
 	size_t token_index = 0;
 	size_t argument_count = 0;
@@ -284,6 +316,7 @@ TokenList lexer(
 	PosFile position_file = {1,1};
 	PosFile last_end_word = {0,0};
 	PosFile beginning_word = {0,0};
+	PosFile last_keyword = {0,0};
 	for(char *c = content_file.data; *c ; c++){
 		printf("\"%c\"  ", *c);
 		printf("%d\n", isSeparatorChar(*c));
@@ -298,7 +331,7 @@ TokenList lexer(
 		}
 		
 		if(!anotation){
-			// If the char end a word
+			// If the char is a separator
 			if(isSeparatorChar(*c) && on_word){
 				printf("1 | ");
 				word[word_index] = '\0';
@@ -307,21 +340,75 @@ TokenList lexer(
 				// If it's an ARGUMENT
 				if(findKeyword(word) == NOT_A_KEYWORD){
 					printf("1.1 | ");
+					argument_count++;
+					is_adress = 1;
+					if(word[0] >= '0' && word[0] <= '9'){
+						is_adress = 0;
+					}
+
 					if(last_instruction_close){
-						compilationError(5, word, ' ', beginning_word, 0);
+						compilationError(5, word, ' ', beginning_word, 0, 0);
+					}
+
+					if(argument_count > ARGUMENT_NUMBER[current_keyword_index]){
+						compilationError(8, current_keyword, ' ', last_keyword, argument_count, 0);
 					}
 
 					// If the first char of the word is not a prefix or a number
 					if((word[0] < '0' || word[0] > '9') && !isPrefixChar(word[0])){
 						printf("1.1.2 | ");
-						compilationError(4, word, word[0], beginning_word, 0);
+						compilationError(4, word, word[0], beginning_word, 0, 0);
 					}
 					
-					if(!isNumber((word + 1))){
-						compilationError(6, word, ' ', beginning_word, 0);
+					// If the argument is all number
+					if(!isNumber((word + is_adress))){
+						compilationError(6, word, ' ', beginning_word, 0, 0);
+					}
+					
+					if(word[0] >= '0' && word[0] <= '9'){
+						token_list.data[token_index].type = VALUE;
+					}
+					else if(current_keyword_index > 14){
+
+						if(word[0] == 'R' || word[0] == '@'){
+							token_list.data[token_index].type = REGISTER_RAM_ADRESS;
+						}
+
+					}
+					else{
+						switch(word[0]){
+							case 'R':
+							token_list.data[token_index].type = REGISTER_ADRESS;
+							
+							break;
+
+							case '@':
+							token_list.data[token_index].type = RAM_ADRESS;
+							break;
+						}
+					}
+					switch(word[0]){
+						case 'M':
+						token_list.data[token_index].type = MEMORY_PROGRAM_ADRESS;
+						break;
+
+						case 'I':
+						token_list.data[token_index].type = INPUT_ADRESS;
+						break;
+
+						case 'O':
+						token_list.data[token_index].type = OUTPUT_ADRESS;
+						break;
 					}
 
-					argument_count++;
+					// argument_count - 1 because it's an index, not a count in this case
+					if(token_list.data[token_index].type != ARGUMENT_ARCHITECTURE[current_keyword_index][argument_count - 1]){
+						char current_enum[25];
+						strcpy(current_enum, TOKEN_TYPE_NAME_TABLE[token_list.data[token_index].type]);
+						compilationError(7, current_enum, ' ', beginning_word, current_keyword_index, argument_count - 1);
+					}
+
+					token_list.data[token_index].data = atoi(word + is_adress);
 				}
 				// If it's a KEYWORD
 				else{ 
@@ -329,21 +416,23 @@ TokenList lexer(
 					// If an instruction was called without being closed
 					if(last_instruction_close == false){
 						printf("1.2.1 | ");
-						compilationError(2, word, ' ', last_end_word, 0);
+						compilationError(2, word, ' ', last_end_word, 0, 0);
 					} 
 
+					last_keyword = beginning_word;
 					last_instruction_close = false;
 					token_list.data[token_index].type = KEYWORD;
 					token_list.data[token_index].data = findKeyword(word);
 					strcpy(current_keyword, word);
-					
+					current_keyword_index = findKeyword(current_keyword);					
 				}
 				last_end_word = position_file;
+				token_index++;
 			}
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
 				printf("2 | ");
-				compilationError(1, "", *c, position_file, 0);
+				compilationError(1, "", *c, position_file, 0, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
@@ -359,8 +448,12 @@ TokenList lexer(
 			switch(*c){
 				// End of an instruction
 				case ';':
-				if(argument_count != ARGUMENT_NUMBER[findKeyword(current_keyword)]){
-					compilationError(3, current_keyword, *c, position_file, argument_count);
+				if(last_instruction_close){
+					compilationError(9, word, ' ', position_file, 0, 0);
+				}
+
+				if(argument_count < ARGUMENT_NUMBER[current_keyword_index]){
+					compilationError(3, current_keyword, *c, last_keyword, argument_count, 0);
 				}
 				last_instruction_close = true;
 				current_keyword[0] = '\0';
@@ -390,9 +483,8 @@ TokenList lexer(
 		printf("C_WORD : \"%s\"\n", current_keyword);
 		printf("-----------------\n");
 
-		token_index++;
 	}
-	if(last_instruction_close == false){ printf("4 | \n"); compilationError(2, word, ' ', last_end_word, 0); }
+	if(last_instruction_close == false){ printf("4 | \n"); compilationError(2, word, ' ', last_end_word, 0, 0); }
 	
 	free(content_file.data);
 	return token_list;
@@ -409,8 +501,6 @@ int main(){
 		printf("ERROR : file failed to open");
 		return 1;
 	}
-
-	printf(" uhiui %d %d\n", '0', '9');
     
 	lexer(KASM, MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT);
 	
