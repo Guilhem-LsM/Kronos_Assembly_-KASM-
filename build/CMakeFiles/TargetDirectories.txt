@@ -1,0 +1,3 @@
+F:/Prog/C/KASM_Compiler/build/CMakeFiles/KASMCompiler.dir
+F:/Prog/C/KASM_Compiler/build/CMakeFiles/edit_cache.dir
+F:/Prog/C/KASM_Compiler/build/CMakeFiles/rebuild_cache.dir

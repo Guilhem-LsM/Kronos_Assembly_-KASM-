@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\msys64\mingw64\bin\cmake.exe --regenerate-during-build -S"F:\Prog\C\KASM Compiler\src" -B"F:\Prog\C\KASM Compiler\src"
+  command = C:\msys64\mingw64\bin\cmake.exe --regenerate-during-build -SF:\Prog\C\KASM_Compiler\src -BF:\Prog\C\KASM_Compiler\build
   description = Re-running CMake...
   generator = 1
 

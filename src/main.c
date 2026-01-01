@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define PATH_INPUT "F:\\Prog\\C\\KASM Compiler\\input\\KASM.txt"
-#define PATH_OUTPUT "F:\\Prog\\C\\KASM Compiler\\output\\KCM.txt"
+#define PATH_INPUT "F:\\Prog\\C\\KASM_Compiler\\input\\KASM.txt"
+#define PATH_OUTPUT "F:\\Prog\\C\\KASM_Compiler\\output\\KCM.txt"
 #define MAX_INSTRUCTION_NUMBER 32768
 #define MAX_ARGUMENT_NUMBER 4
 #define MAX_ARGUMENT_LENGHT 8
@@ -98,30 +98,14 @@ const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
 
 };
 const char KEYWORD_LIST[][24] ={
-	{"NOP"},
-	{"ADD"},
-	{"SUB"},
-	{"SHIFT_R"},
-	{"SHIFT_L"},
-	{"AND"},
-	{"OR"},
-	{"WOR"},
-	{"NOT"},
-	{"EQUAL"},
-	{"INEQUAL"},
-	{"SUP"},
-	{"INF"},
-	{"SUP_EQU"},
-	{"INF_EQU"},
-	{"LOAD"},
-	{"IFGOTO"},
-	{"JUMP"},
-	{"OUT"},
-	{"IN"},
-	{"MOV"},
-	{"PUSH"},
-	{"POP"},
-	{"S_STACK"}
+	{"NOP"}, {"ADD"}, {"SUB"},
+	{"SHIFT_R"}, {"SHIFT_L"}, {"AND"},
+	{"OR"}, {"WOR"}, {"NOT"}, {"EQUAL"},
+	{"INEQUAL"}, {"SUP"}, {"INF"},
+	{"SUP_EQU"}, {"INF_EQU"}, {"LOAD"},
+	{"IFGOTO"}, {"JUMP"}, {"OUT"},
+	{"IN"}, {"MOV"}, {"PUSH"},
+	{"POP"}, {"S_STACK"}
 	};
 
 char toLower(char c){
@@ -278,25 +262,25 @@ TokenList lexer(
 		if(!anotation){
 			// If the char end a word
 			if(isSeparatorChar(*c) && on_word){
-				printf("1 ");
+				printf("1 | ");
 				word[word_index] = '\0';
 				word_index = 0;
 				on_word = false;
 				// If it's an ARGUMENT
 				if(findKeyword(word) == NOT_A_KEYWORD){
-					printf("1.1 ");
+					printf("1.1 | ");
 					argument_count++;
 				}
 				// If it's a KEYWORD
 				else{ 
-					printf("1.2 ");
+					printf("1.2 | ");
 					// If an instruction was called without being closed
 					if(currentKeyword[0] != '\0'){
-						printf("1.2.1 ");
+						printf("1.2.1 | ");
 						compilationError(2, word, ' ', last_end_word, 0);
 					} 
 					else{
-						printf("1.2.2 ");
+						printf("1.2.2 | ");
 						strcpy(currentKeyword, word);
 					}
 				}
@@ -304,12 +288,12 @@ TokenList lexer(
 			}
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
-				printf("2 ");
+				printf("2 | ");
 				compilationError(1, "", *c, position_file, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
-				printf("3 ");
+				printf("3 | ");
 				word[word_index] = *c;
 				word_index++;
 				on_word = true;
@@ -321,7 +305,8 @@ TokenList lexer(
 				if(argument_count != ARGUMENT_NUMBER[findKeyword(currentKeyword)]){
 					compilationError(3, currentKeyword, *c, position_file, argument_count);
 				}
-				currentKeyword[0] = '\n';
+				currentKeyword[0] = '\0';
+				argument_count = 0;
 				break;
 
 				// Start of an anotation
@@ -343,6 +328,8 @@ TokenList lexer(
 		position_file.charactere++;
 		printf("\n");
 		printf("WORD : \"%s\"\n", word);
+		printf("C_WORD : \"%s\"\n", currentKeyword);
+		printf("-----------------\n");
 
 	}
 	
