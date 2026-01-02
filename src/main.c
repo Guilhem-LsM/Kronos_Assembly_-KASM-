@@ -22,7 +22,7 @@ enum TokenType{
 	KEYWORD = 1, 
 	REGISTER_ADRESS, 
 	RAM_ADRESS, 
-	REGISTER_RAM_ADRESS, 
+	REGISTER_OR_RAM_ADRESS, 
 	VALUE, 
 	MEMORY_PROGRAM_ADRESS,
 	OUTPUT_ADRESS,
@@ -36,6 +36,22 @@ typedef struct Token {
 		int data;
 }Token;
 
+typedef struct Hexa{
+	char *data;
+} Hexa;
+
+// The LSB is the first char of the string
+typedef struct Binary{
+	char *data;
+	size_t size;
+} Binary;
+
+typedef struct BinaryPosition{
+	int which_word;
+	int start_bit;
+	size_t binary_size;
+} BinaryPosition;
+
 typedef struct CharList{
 	char *data;
 	size_t size;
@@ -44,8 +60,19 @@ typedef struct CharList{
 
 typedef struct TokenList{
 	Token *data;
-	size_t size;
+	size_t size; 
+	size_t instruction_number;
 }TokenList;
+
+typedef struct HexaList{
+	Hexa *data;
+	size_t size;
+}HexaList;
+
+typedef struct BinaryList{
+	Binary *data;
+	size_t size;
+}BinaryList;
 
 typedef struct PosFile{
 	int line;
@@ -53,6 +80,8 @@ typedef struct PosFile{
 } PosFile;
 
 // CONST DATAS
+
+const Binary EMPTY_BINARY = {"0000000000000000", 16};
 
 const char VALID_CHAR[] = { 
 	'A','B','C','D','E','F',
@@ -78,7 +107,7 @@ const unsigned int ARGUMENT_NUMBER[] = {
 	3, 3, 2, 2, 1, 2, 2, 2, 1, 0, 1
 };
 
-const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
+const enum TokenType ARGUMENT_ARCHITECTURE[24][25] = {
 	{NONE},
 	{REGISTER_ADRESS, REGISTER_ADRESS, REGISTER_ADRESS},
 	{REGISTER_ADRESS, REGISTER_ADRESS, REGISTER_ADRESS},
@@ -94,15 +123,42 @@ const enum TokenType ARGUMENT_ARCHITECTURE[][24] = {
 	{REGISTER_ADRESS, REGISTER_ADRESS, REGISTER_ADRESS},
 	{REGISTER_ADRESS, REGISTER_ADRESS, REGISTER_ADRESS},
 	{REGISTER_ADRESS, REGISTER_ADRESS, REGISTER_ADRESS},
-	{REGISTER_RAM_ADRESS, VALUE},
+	{REGISTER_OR_RAM_ADRESS, VALUE},
 	{REGISTER_ADRESS, MEMORY_PROGRAM_ADRESS},
 	{MEMORY_PROGRAM_ADRESS},
-	{OUTPUT_ADRESS, REGISTER_RAM_ADRESS},
-	{INPUT_ADRESS, REGISTER_RAM_ADRESS},
-	{REGISTER_RAM_ADRESS, REGISTER_RAM_ADRESS},
-	{REGISTER_RAM_ADRESS},
+	{OUTPUT_ADRESS, REGISTER_OR_RAM_ADRESS},
+	{INPUT_ADRESS, REGISTER_OR_RAM_ADRESS},
+	{REGISTER_OR_RAM_ADRESS, REGISTER_OR_RAM_ADRESS},
+	{REGISTER_OR_RAM_ADRESS},
 	{NONE},
-	{REGISTER_RAM_ADRESS}
+	{REGISTER_OR_RAM_ADRESS}
+};
+
+const BinaryPosition BINARY_ARCHITECTURE[24][4] = {
+	{{0, 0, 5}},									// 0
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 1
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 2
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}},				// 3
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}},				// 4
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 5
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 6
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 7
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}},				// 8
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 9
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 10
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 11	
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 12
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 13
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 14
+	{{0, 0, 5}, {1, 0, 16}, {2, 0, 16}},			// 15
+	{{0, 0, 5}, {0, 5, 5}, {1, 0, 16}},				// 16
+	{{0, 0, 5}, {1, 0, 16}},						// 17
+	{{0, 0, 5}, {0, 5, 4}, {1, 0, 16}},				// 18
+	{{0, 0, 5}, {0, 5, 4}, {1, 0, 16}},				// 19
+	{{0, 0, 5}, {1, 0, 16}, {2, 0, 16}},			// 20
+	{{0, 0, 5}, {1, 0, 16}},						// 21
+	{{0, 0, 5}},									// 22
+	{{0, 0, 5}, {1, 0, 16}}							// 23
 };
 
 const char KEYWORD_LIST[24][8] = {
@@ -116,12 +172,12 @@ const char KEYWORD_LIST[24][8] = {
 	{"POP"}, {"S_STACK"}
 };
 
-const char TOKEN_TYPE_NAME_TABLE[9][25] = {
+const char TOKEN_TYPE_NAME_TABLE[9][23] = {
 	{"NONE"},
 	{"KEYWORD"},
 	{"REGISTER_ADRESS"},
 	{"RAM_ADRESS"},
-	{"REGISTER_RAM_ADRESS"},
+	{"REGISTER_OR_RAM_ADRESS"},
 	{"VALUE"},
 	{"MEMORY_PROGRAM_ADRESS"},
 	{"OUTPUT_ADRESS"},
@@ -129,6 +185,28 @@ const char TOKEN_TYPE_NAME_TABLE[9][25] = {
 };
 
 // FUNCTIONS
+
+char* decimalToBinary(int decimal_value, size_t binary_size){
+	if(binary_size > 16){
+		printf("ERROR : Binary size too high");
+		exit(1);
+	}
+	char *binary_number = malloc(17 * sizeof(char));
+	for(int i = 0; i < binary_size; i++){
+		if((decimal_value - (int)pow(2, ((binary_size -1) - i))) >= 0){
+			binary_number[(binary_size -1) - i] = '1';
+			decimal_value -= (int)pow(2, ((binary_size -1) - i));
+			
+		}
+		else{
+			binary_number[(binary_size -1) - i] = '0';
+		}
+	}
+
+	binary_number[binary_size] = '\0';
+
+	return binary_number;
+}
 
 char toLower(char c){
 	if(c >= 65 && c <= 90){
@@ -251,6 +329,11 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		case 9 :
 		printf("\';\' unexpected\n");
 		break;
+
+		case 10 :
+		printf("Identifier too long\n");
+		break;
+		
 	}
 	
 	printf("LINE : %d\n", position_file.line);
@@ -272,7 +355,7 @@ TokenList lexer(
 		exit(1);
 	}
 	
-	TokenList token_list = {malloc(max_instruction_number * max_argument_number * sizeof(Token)), max_instruction_number * max_argument_number};
+	TokenList token_list = {malloc(max_instruction_number * max_argument_number * sizeof(Token)), max_instruction_number * max_argument_number, 0};
 	if(!token_list.data){
 		printf("ERROR : standarized_file allocation failed !\n");
 		exit(1);
@@ -306,6 +389,7 @@ TokenList lexer(
 	size_t word_index = 0;
 	size_t token_index = 0;
 	size_t argument_count = 0;
+	size_t insutrciton_count = 0;
 	bool on_word = false;
 	bool last_instruction_close = true;
 	bool anotation = false;
@@ -318,10 +402,8 @@ TokenList lexer(
 	PosFile beginning_word = {0,0};
 	PosFile last_keyword = {0,0};
 	for(char *c = content_file.data; *c ; c++){
-		printf("\"%c\"  ", *c);
-		printf("%d\n", isSeparatorChar(*c));
 		if(word_index >= max_argument_lenght){
-			printf("ERROR : word_index out of range\n");
+			compilationError(10, word, ' ', beginning_word, 0, 0);
 			exit(1);
 		}
 		
@@ -333,13 +415,11 @@ TokenList lexer(
 		if(!anotation){
 			// If the char is a separator
 			if(isSeparatorChar(*c) && on_word){
-				printf("1 | ");
 				word[word_index] = '\0';
 				word_index = 0;
 				on_word = false;
 				// If it's an ARGUMENT
 				if(findKeyword(word) == NOT_A_KEYWORD){
-					printf("1.1 | ");
 					argument_count++;
 					is_adress = 1;
 					if(word[0] >= '0' && word[0] <= '9'){
@@ -368,26 +448,16 @@ TokenList lexer(
 					if(word[0] >= '0' && word[0] <= '9'){
 						token_list.data[token_index].type = VALUE;
 					}
-					else if(current_keyword_index > 14){
-
-						if(word[0] == 'R' || word[0] == '@'){
-							token_list.data[token_index].type = REGISTER_RAM_ADRESS;
-						}
-
-					}
-					else{
-						switch(word[0]){
-							case 'R':
-							token_list.data[token_index].type = REGISTER_ADRESS;
-							
-							break;
-
-							case '@':
-							token_list.data[token_index].type = RAM_ADRESS;
-							break;
-						}
-					}
+					
 					switch(word[0]){
+						case 'R':
+						token_list.data[token_index].type = REGISTER_ADRESS;
+						break;
+
+						case '@':
+						token_list.data[token_index].type = RAM_ADRESS;
+						break;
+
 						case 'M':
 						token_list.data[token_index].type = MEMORY_PROGRAM_ADRESS;
 						break;
@@ -402,9 +472,14 @@ TokenList lexer(
 					}
 
 					// argument_count - 1 because it's an index, not a count in this case
-					if(token_list.data[token_index].type != ARGUMENT_ARCHITECTURE[current_keyword_index][argument_count - 1]){
-						char current_enum[25];
-						strcpy(current_enum, TOKEN_TYPE_NAME_TABLE[token_list.data[token_index].type]);
+					char current_enum[25];
+					strcpy(current_enum, TOKEN_TYPE_NAME_TABLE[token_list.data[token_index].type]);
+					if(ARGUMENT_ARCHITECTURE[current_keyword_index][argument_count - 1] == REGISTER_OR_RAM_ADRESS){
+						if(token_list.data[token_index].type != REGISTER_ADRESS && token_list.data[token_index].type != RAM_ADRESS){
+							compilationError(7, current_enum, ' ', beginning_word, current_keyword_index, argument_count - 1);
+						}
+					}
+					else if(token_list.data[token_index].type != ARGUMENT_ARCHITECTURE[current_keyword_index][argument_count - 1]){
 						compilationError(7, current_enum, ' ', beginning_word, current_keyword_index, argument_count - 1);
 					}
 
@@ -412,10 +487,8 @@ TokenList lexer(
 				}
 				// If it's a KEYWORD
 				else{ 
-					printf("1.2 | ");
 					// If an instruction was called without being closed
 					if(last_instruction_close == false){
-						printf("1.2.1 | ");
 						compilationError(2, word, ' ', last_end_word, 0, 0);
 					} 
 
@@ -431,12 +504,10 @@ TokenList lexer(
 			}
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
-				printf("2 | ");
 				compilationError(1, "", *c, position_file, 0, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
-				printf("3 | ");
 				if(!on_word){
 					beginning_word = position_file;
 				}
@@ -455,6 +526,7 @@ TokenList lexer(
 				if(argument_count < ARGUMENT_NUMBER[current_keyword_index]){
 					compilationError(3, current_keyword, *c, last_keyword, argument_count, 0);
 				}
+				insutrciton_count++;
 				last_instruction_close = true;
 				current_keyword[0] = '\0';
 				argument_count = 0;
@@ -478,16 +550,80 @@ TokenList lexer(
 		else{
 			position_file.charactere++;
 		}
-		printf("\n");
-		printf("WORD : \"%s\"\n", word);
-		printf("C_WORD : \"%s\"\n", current_keyword);
-		printf("-----------------\n");
 
 	}
 	if(last_instruction_close == false){ printf("4 | \n"); compilationError(2, word, ' ', last_end_word, 0, 0); }
-	
 	free(content_file.data);
+	token_list.instruction_number = insutrciton_count;
+	printf("Total instruction : %d\n", insutrciton_count);
 	return token_list;
+}
+
+HexaList machineCodeEncoder(
+	size_t max_instruction_number, 
+	size_t max_argument_number,
+	size_t max_argument_lenght,
+	TokenList token_list
+){
+
+	printf("Machine code encoder begin\n");
+
+	BinaryList machine_code_binary = {malloc(token_list.instruction_number * 3 * sizeof(Binary)), token_list.instruction_number * 3};
+	for(int i = 0; i < machine_code_binary.size ; i++){
+		machine_code_binary.data[i].data = NULL;
+	}
+
+	HexaList machine_code_hexa;
+	printf("Loi : %lu\n", machine_code_binary.size);
+	size_t indentifier_index = 0;
+	int instruction_index = -1;
+	int instruction_id = 0;
+	for(int i = 0; i < token_list.size ; i++){
+		if(token_list.data[i].type == 0){break;}
+		printf("%d  ", token_list.data[i].type);
+		printf("%d  ", token_list.data[i].data);
+
+		if(token_list.data[i].type == KEYWORD){ 
+			instruction_id = token_list.data[i].data;
+			indentifier_index = 0;
+			instruction_index++;
+		}
+
+		if(machine_code_binary.data[instruction_index * 3].data == NULL){
+			for(int l = 0; l < 3; l++){
+				if(instruction_index * 3 + l >= machine_code_binary.size){
+					printf("ERROR : machine_code_binary overflow !");
+					exit(1);
+				}
+				char *c = malloc(17 * sizeof(char));
+				strcpy(c, "0000000000000000");
+				machine_code_binary.data[instruction_index * 3 + l].data = c;
+			}
+		}
+
+		printf("ISTR :%d ARG:%d\n", instruction_index, indentifier_index);
+		printf("1\n");
+		char *binary_value = decimalToBinary(token_list.data[i].data, BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
+		printf("2\n");
+		printf("DEST=%p SRC=%p SIZE=%zu\n",
+       		((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data),
+       		binary_value,9/
+       		(size_t)BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
+
+		printf("%s\n", ((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data + BINARY_ARCHITECTURE[instruction_id][indentifier_index].start_bit));
+		memcpy(((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data + BINARY_ARCHITECTURE[instruction_id][indentifier_index].start_bit), binary_value, (size_t)BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
+		printf("3\n");
+		free(binary_value);
+
+		indentifier_index++;
+	}
+
+	printf("MACHINE CODE BINARY\n");
+	for(Binary *b = machine_code_binary.data; b->data != NULL ; b++){
+		printf("%s\n", b->data);
+	}
+
+	return machine_code_hexa;
 }
 
 // MAIN
@@ -502,8 +638,11 @@ int main(){
 		return 1;
 	}
     
-	lexer(KASM, MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT);
+	TokenList token_list;
+	token_list = lexer(KASM, MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT);
 	
+	machineCodeEncoder(MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT, token_list);
+
 	//LEXER
     //TOKENIZER
     
@@ -512,7 +651,7 @@ int main(){
 	
     fclose(KCM);
     fclose(KASM);
-        
+    free(token_list.data);
     printf("Compilation Done !\n");
     return 0;
 }
