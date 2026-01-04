@@ -574,14 +574,11 @@ HexaList machineCodeEncoder(
 	}
 
 	HexaList machine_code_hexa;
-	printf("Loi : %lu\n", machine_code_binary.size);
 	size_t indentifier_index = 0;
 	int instruction_index = -1;
 	int instruction_id = 0;
 	for(int i = 0; i < token_list.size ; i++){
 		if(token_list.data[i].type == 0){break;}
-		printf("%d  ", token_list.data[i].type);
-		printf("%d  ", token_list.data[i].data);
 
 		if(token_list.data[i].type == KEYWORD){ 
 			instruction_id = token_list.data[i].data;
@@ -601,18 +598,10 @@ HexaList machineCodeEncoder(
 			}
 		}
 
-		printf("ISTR :%d ARG:%d\n", instruction_index, indentifier_index);
-		printf("1\n");
-		char *binary_value = decimalToBinary(token_list.data[i].data, BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
-		printf("2\n");
-		printf("DEST=%p SRC=%p SIZE=%zu\n",
-       		((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data),
-       		binary_value,9/
-       		(size_t)BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
 
-		printf("%s\n", ((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data + BINARY_ARCHITECTURE[instruction_id][indentifier_index].start_bit));
+		char *binary_value = decimalToBinary(token_list.data[i].data, BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
+
 		memcpy(((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data + BINARY_ARCHITECTURE[instruction_id][indentifier_index].start_bit), binary_value, (size_t)BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
-		printf("3\n");
 		free(binary_value);
 
 		indentifier_index++;

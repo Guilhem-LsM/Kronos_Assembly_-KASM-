@@ -1,6 +1,6 @@
 MOV R5 R6;
 POP;
-NOP;
+NOP; #ergerg
 MOV R5 R6;
 MOV R5 R6;
 MOV R5 R6;
