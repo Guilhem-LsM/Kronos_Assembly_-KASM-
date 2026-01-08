@@ -3,11 +3,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
+#include <libloaderapi.h>
 
 #ifdef _WIN32
 	#define WHICH_OS 1
+	#include <windows.h>
 #elif __linux__
 	#define WHICH_OS 2
+	#include <unistd.h>
 #else  
 	#define WHICH_OS 0
 #endif
@@ -625,22 +628,51 @@ HexaList machineCodeEncoder(
 
 // MAIN
 
-int main(){
+int main(int argc, char *argv[]){
 
 	if(!WHICH_OS){
-		printf("ERROR : Unsupported OS\n");
+		printf("ERROR : Unsuported OS\n");
 	}
-	else if(WHICH_OS == 1){
-		printf("Windows\n");
-	}
-	else if(WHICH_OS == 2){
-		printf("Linux\n");
-	}
+
+	char PROGRAM_PATH[1000];
+	char INPUT_PATH[1000];
+	char OUTPUT_PATH[1000];
+	#ifdef _WIN32
+		GetModuleFileNameA(NULL, PROGRAM_PATH, 1000);
+		size_t index_path = strlen(PROGRAM_PATH);
+		while(PROGRAM_PATH[index_path] != '\\'){
+			index_path--;
+		}
+		PROGRAM_PATH[index_path+1] = '\0';
+		strcpy(INPUT_PATH, PROGRAM_PATH);
+		strcpy(OUTPUT_PATH, PROGRAM_PATH);
+		strcat(INPUT_PATH, "input\\input.txt");
+		strcat(OUTPUT_PATH, "output\\output.txt");
+	#elif 
+		int index_path = readlink("/proc/self/exe", PROGRAM_PATH, 1000);
+		if(index_path != -1){
+			PROGRAM_PATH[index_path] = '\0';
+		}
+		while(PROGRAM_PATH[index_path] != '/'){
+			index_path--;
+		}
+		PROGRAM_PATH[index_path+1] = '\0';
+		strcpy(INPUT_PATH, PROGRAM_PATH);
+		strcpy(OUTPUT_PATH, PROGRAM_PATH);
+		strcat(INPUT_PATH, "input/input.txt");
+		strcat(OUTPUT_PATH, "output/output.txt");
+	#endif
+
+	printf("PATH : %s\n", INPUT_PATH);
+	printf("PATH : %s\n", OUTPUT_PATH);
+
+
+
 
     FILE *KCM;
     FILE *KASM;
-	KCM = fopen(PATH_OUTPUT, "w");
-	KASM = fopen(PATH_INPUT, "r");	
+	KCM = fopen(OUTPUT_PATH, "w");
+	KASM = fopen(INPUT_PATH, "r");	
     if (!KASM || !KCM) {
 		printf("ERROR : file failed to open");
 		return 1;
