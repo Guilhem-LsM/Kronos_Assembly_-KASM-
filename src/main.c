@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifdef _WIN32
+	#define WHICH_OS 1
+#elif __linux__
+	#define WHICH_OS 2
+#else  
+	#define WHICH_OS 0
+#endif
+
 #define PATH_INPUT "F:\\Prog\\C\\KASM_Compiler\\input\\KASM.txt"
 #define PATH_OUTPUT "F:\\Prog\\C\\KASM_Compiler\\output\\KCM.txt"
 #define MAX_INSTRUCTION_NUMBER 32768
@@ -618,6 +626,17 @@ HexaList machineCodeEncoder(
 // MAIN
 
 int main(){
+
+	if(!WHICH_OS){
+		printf("ERROR : Unsupported OS\n");
+	}
+	else if(WHICH_OS == 1){
+		printf("Windows\n");
+	}
+	else if(WHICH_OS == 2){
+		printf("Linux\n");
+	}
+
     FILE *KCM;
     FILE *KASM;
 	KCM = fopen(PATH_OUTPUT, "w");
