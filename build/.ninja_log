@@ -1,3 +1,3 @@
-# ninja log v7
-4	205	1767891752227966245	CMakeFiles/KASMCompiler.dir/main.c.o	42df055dee7f0b2b
-206	263	1767891752431217310	KASMCompiler	512ad9684d89ddc9
+# ninja log v6
+10	1753	7895953544365313	CMakeFiles/KASMCompiler.dir/main.c.obj	d5513ca6e814153f
+1759	2062	7895953561861938	KASMCompiler.exe	d824901c6a73c59c
