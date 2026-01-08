@@ -17,7 +17,7 @@
 rule C_COMPILER__KASMCompiler_unscanned_
   depfile = $DEP_FILE
   deps = gcc
-  command = ${LAUNCHER}${CODE_CHECK}C:\mingw64\bin\gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  command = ${LAUNCHER}${CODE_CHECK}/usr/bin/cc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
   description = Building C object $out
 
 
@@ -25,7 +25,9 @@ rule C_COMPILER__KASMCompiler_unscanned_
 # Rule for linking C executable.
 
 rule C_EXECUTABLE_LINKER__KASMCompiler_
-  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && C:\mingw64\bin\gcc.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  depfile = $DEP_FILE
+  deps = gcc
+  command = $PRE_LINK && /usr/bin/cc $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT
 
@@ -42,7 +44,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -SE:\Prog\C\KASM_Compiler\src -BE:\Prog\C\KASM_Compiler\build
+  command = /usr/bin/cmake --regenerate-during-build -S/home/GUI/Documents/gits/Kronos_Assembly_-KASM-/src -B/home/GUI/Documents/gits/Kronos_Assembly_-KASM-/build
   description = Re-running CMake...
   generator = 1
 
@@ -51,7 +53,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = C:\mingw64\bin\ninja.exe $FILE_ARG -t clean $TARGETS
+  command = /usr/bin/ninja-build $FILE_ARG -t clean $TARGETS
   description = Cleaning all built files...
 
 
@@ -59,6 +61,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = C:\mingw64\bin\ninja.exe -t targets
+  command = /usr/bin/ninja-build -t targets
   description = All primary targets available:
 

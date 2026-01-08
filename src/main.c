@@ -3,11 +3,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
-#include <libloaderapi.h>
 
 #ifdef _WIN32
 	#define WHICH_OS 1
 	#include <windows.h>
+	#include <libloaderapi.h>
 #elif __linux__
 	#define WHICH_OS 2
 	#include <unistd.h>
@@ -15,8 +15,6 @@
 	#define WHICH_OS 0
 #endif
 
-#define PATH_INPUT "F:\\Prog\\C\\KASM_Compiler\\input\\KASM.txt"
-#define PATH_OUTPUT "F:\\Prog\\C\\KASM_Compiler\\output\\KCM.txt"
 #define MAX_INSTRUCTION_NUMBER 32768
 #define MAX_ARGUMENT_NUMBER 4
 #define MAX_ARGUMENT_LENGHT 8
@@ -648,7 +646,7 @@ int main(int argc, char *argv[]){
 		strcpy(OUTPUT_PATH, PROGRAM_PATH);
 		strcat(INPUT_PATH, "input\\input.txt");
 		strcat(OUTPUT_PATH, "output\\output.txt");
-	#elif 
+	#else
 		int index_path = readlink("/proc/self/exe", PROGRAM_PATH, 1000);
 		if(index_path != -1){
 			PROGRAM_PATH[index_path] = '\0';

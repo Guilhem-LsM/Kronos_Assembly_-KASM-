@@ -1,3 +1,3 @@
-E:/Prog/C/KASM_Compiler/build/CMakeFiles/KASMCompiler.dir
-E:/Prog/C/KASM_Compiler/build/CMakeFiles/edit_cache.dir
-E:/Prog/C/KASM_Compiler/build/CMakeFiles/rebuild_cache.dir
+/home/GUI/Documents/gits/Kronos_Assembly_-KASM-/build/CMakeFiles/KASMCompiler.dir
+/home/GUI/Documents/gits/Kronos_Assembly_-KASM-/build/CMakeFiles/edit_cache.dir
+/home/GUI/Documents/gits/Kronos_Assembly_-KASM-/build/CMakeFiles/rebuild_cache.dir
