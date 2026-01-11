@@ -9,7 +9,7 @@
 #define MAX_ARGUMENT_LENGHT 8
 #define KEYWORD_NUMBER 24
 #define NOT_A_KEYWORD -1
-#define VALID_CHAR_NUMBER 43
+#define VALID_CHAR_NUMBER 42
 #define SEPERATIR_CHAR_NUMBER 5
 #define PREFIX_CHAR_NUMBER 5
 #define PATH "/c/Users/vvilh/OneDrive"
@@ -104,7 +104,7 @@ const char VALID_CHAR[] = {
 	'Y','Z','0','1','2','3',
 	'4','5','6','7','8','9',
 	' ', '#', '@', '	', ';',
-	'\n', '*'
+	'\n'
 };
 
 const char SEPERATOR_CHAR[] = {
@@ -346,10 +346,6 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		case 10 :
 		printf("Identifier too long\n");
 		break;
-
-		case 11 :
-		printf("\'*\' expected\n");
-		break;
 		
 	}
 	
@@ -483,7 +479,7 @@ TokenList lexer(
 						token_list.data[token_index].type = RAM_ADRESS;
 						break;
 
-						case 'L':
+						case 'M':
 						token_list.data[token_index].type = MEMORY_PROGRAM_ADRESS;
 						break;
 
@@ -533,17 +529,10 @@ TokenList lexer(
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
 				// charactere not valid
-				compilationError(11, "", *c, position_file, 0, 0);
+				compilationError(1, "", *c, position_file, 0, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
-				// if there's a * inside an argument
-				if(on_word && *c == '*'){
-					compilationError(7, word, ' ', position_file, 0, 0);
-				}
-				else if(!on_word && *c == '*'){
-					is_pointer = true;
-				}
 				if(!on_word){
 					beginning_word = position_file;
 				}
@@ -679,8 +668,7 @@ int main(int argc, char *argv[]){
 	TokenList token_list;
 	token_list = lexer(KASM, MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT);
 	
-	HexaList hexa_list;
-	hexa_list = machineCodeEncoder(MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT, token_list);
+	machineCodeEncoder(MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT, token_list);
 
 	//LEXER
     //TOKENIZER
@@ -691,7 +679,6 @@ int main(int argc, char *argv[]){
     fclose(KCM);
     fclose(KASM);
     free(token_list.data);
-	free(hexa_list.data);
     printf("Compilation Done !\n");
     return 0;
 }

@@ -9,7 +9,7 @@
 #define MAX_ARGUMENT_LENGHT 8
 #define KEYWORD_NUMBER 24
 #define NOT_A_KEYWORD -1
-#define VALID_CHAR_NUMBER 43
+#define VALID_CHAR_NUMBER 42
 #define SEPERATIR_CHAR_NUMBER 5
 #define PREFIX_CHAR_NUMBER 5
 #define PATH "/c/Users/vvilh/OneDrive"
@@ -104,7 +104,7 @@ const char VALID_CHAR[] = {
 	'Y','Z','0','1','2','3',
 	'4','5','6','7','8','9',
 	' ', '#', '@', '	', ';',
-	'\n', '*'
+	'\n'
 };
 
 const char SEPERATOR_CHAR[] = {
@@ -346,10 +346,6 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		case 10 :
 		printf("Identifier too long\n");
 		break;
-
-		case 11 :
-		printf("\'*\' expected\n");
-		break;
 		
 	}
 	
@@ -533,17 +529,10 @@ TokenList lexer(
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
 				// charactere not valid
-				compilationError(11, "", *c, position_file, 0, 0);
+				compilationError(1, "", *c, position_file, 0, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
-				// if there's a * inside an argument
-				if(on_word && *c == '*'){
-					compilationError(7, word, ' ', position_file, 0, 0);
-				}
-				else if(!on_word && *c == '*'){
-					is_pointer = true;
-				}
 				if(!on_word){
 					beginning_word = position_file;
 				}

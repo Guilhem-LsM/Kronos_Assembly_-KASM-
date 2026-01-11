@@ -9,10 +9,9 @@
 #define MAX_ARGUMENT_LENGHT 8
 #define KEYWORD_NUMBER 24
 #define NOT_A_KEYWORD -1
-#define VALID_CHAR_NUMBER 43
+#define VALID_CHAR_NUMBER 42
 #define SEPERATIR_CHAR_NUMBER 5
 #define PREFIX_CHAR_NUMBER 5
-#define PATH "/c/Users/vvilh/OneDrive"
 
 #ifdef _WIN32
 	#define WHICH_OS 1
@@ -44,7 +43,7 @@ enum TokenType{
 typedef struct Token {
 		enum TokenType type;
 		int data;
-		bool is_pointer;
+		bool pointer;
 }Token;
 
 typedef struct Hexa{
@@ -58,11 +57,9 @@ typedef struct Binary{
 } Binary;
 
 typedef struct BinaryPosition{
-	size_t which_word;
-	size_t start_bit;
+	int which_word;
+	int start_bit;
 	size_t binary_size;
-	size_t pointer_word;
-	size_t pointer_bit;
 } BinaryPosition;
 
 typedef struct CharList{
@@ -104,7 +101,7 @@ const char VALID_CHAR[] = {
 	'Y','Z','0','1','2','3',
 	'4','5','6','7','8','9',
 	' ', '#', '@', '	', ';',
-	'\n', '*'
+	'\n'
 };
 
 const char SEPERATOR_CHAR[] = {
@@ -148,30 +145,30 @@ const enum TokenType ARGUMENT_ARCHITECTURE[24][25] = {
 };
 
 const BinaryPosition BINARY_ARCHITECTURE[24][4] = {
-	{{0, 0, 5, 0, 0}},														// 0
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 1
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 2
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}},					// 3
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}},					// 4
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 5
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 6
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 7
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}},					// 8
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 9	
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 10	
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 11	
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 12	
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 13	
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 1, 5}, {0, 10, 5, 1, 6}, {1, 0, 5, 1, 7}},	// 14	
-	{{0, 0, 5, 0, 0}, {1, 0, 16, 0, 11}, {2, 0, 16, 0, 0}},					// 15
-	{{0, 0, 5, 0, 0}, {0, 5, 5, 0, 10}, {1, 0, 16, 0, 0}},					// 16
-	{{0, 0, 5, 0, 0}, {1, 0, 16, 0, 0}},									// 17
-	{{0, 0, 5, 0, 0}, {0, 5, 4, 0, 0}, {1, 0, 16, 0, 11}},					// 18
-	{{0, 0, 5, 0, 0}, {0, 5, 4, 0, 0}, {1, 0, 16, 0, 11}},					// 19
-	{{0, 0, 5, 0, 0}, {1, 0, 16, 0, 11}, {2, 0, 16, 0, 12}},				// 20
-	{{0, 0, 5, 0, 0}, {1, 0, 16, 0, 11}},									// 21
-	{{0, 0, 5, 0, 0}},														// 22
-	{{0, 0, 5, 0, 0}, {1, 0, 16, 0, 11}}									// 23
+	{{0, 0, 5}},									// 0
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 1
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 2
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}},				// 3
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}},				// 4
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 5
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 6
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 7
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}},				// 8
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 9
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 10
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 11
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 12
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 13
+	{{0, 0, 5}, {0, 5, 5}, {0, 10, 5}, {1, 0, 5}},	// 14
+	{{0, 0, 5}, {1, 0, 16}, {2, 0, 16}},			// 15
+	{{0, 0, 5}, {0, 5, 5}, {1, 0, 16}},				// 16
+	{{0, 0, 5}, {1, 0, 16}},						// 17
+	{{0, 0, 5}, {0, 5, 4}, {1, 0, 16}},				// 18
+	{{0, 0, 5}, {0, 5, 4}, {1, 0, 16}},				// 19
+	{{0, 0, 5}, {1, 0, 16}, {2, 0, 16}},			// 20
+	{{0, 0, 5}, {1, 0, 16}},						// 21
+	{{0, 0, 5}},									// 22
+	{{0, 0, 5}, {1, 0, 16}}							// 23
 };
 
 const char KEYWORD_LIST[24][8] = {
@@ -346,10 +343,6 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		case 10 :
 		printf("Identifier too long\n");
 		break;
-
-		case 11 :
-		printf("\'*\' expected\n");
-		break;
 		
 	}
 	
@@ -483,7 +476,7 @@ TokenList lexer(
 						token_list.data[token_index].type = RAM_ADRESS;
 						break;
 
-						case 'L':
+						case 'M':
 						token_list.data[token_index].type = MEMORY_PROGRAM_ADRESS;
 						break;
 
@@ -533,17 +526,10 @@ TokenList lexer(
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
 				// charactere not valid
-				compilationError(11, "", *c, position_file, 0, 0);
+				compilationError(1, "", *c, position_file, 0, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
-				// if there's a * inside an argument
-				if(on_word && *c == '*'){
-					compilationError(7, word, ' ', position_file, 0, 0);
-				}
-				else if(!on_word && *c == '*'){
-					is_pointer = true;
-				}
 				if(!on_word){
 					beginning_word = position_file;
 				}
@@ -616,7 +602,33 @@ HexaList machineCodeEncoder(
 	int instruction_index = -1;
 	int instruction_id = 0;
 	for(int i = 0; i < token_list.size ; i++){
-		
+		if(token_list.data[i].type == 0){break;}
+
+		if(token_list.data[i].type == KEYWORD){ 
+			instruction_id = token_list.data[i].data;
+			indentifier_index = 0;
+			instruction_index++;
+		}
+
+		if(machine_code_binary.data[instruction_index * 3].data == NULL){
+			for(int l = 0; l < 3; l++){
+				if(instruction_index * 3 + l >= machine_code_binary.size){
+					printf("ERROR : machine_code_binary overflow !");
+					exit(1);
+				}
+				char *c = malloc(17 * sizeof(char));
+				strcpy(c, "0000000000000000");
+				machine_code_binary.data[instruction_index * 3 + l].data = c;
+			}
+		}
+
+
+		char *binary_value = decimalToBinary(token_list.data[i].data, BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
+
+		memcpy(((machine_code_binary.data + (instruction_index * 3) + BINARY_ARCHITECTURE[instruction_id][indentifier_index].which_word)->data + BINARY_ARCHITECTURE[instruction_id][indentifier_index].start_bit), binary_value, (size_t)BINARY_ARCHITECTURE[instruction_id][indentifier_index].binary_size);
+		free(binary_value);
+
+		indentifier_index++;
 	}
 
 	printf("MACHINE CODE BINARY\n");
@@ -638,7 +650,7 @@ int main(int argc, char *argv[]){
 	char PROGRAM_PATH[1000];
 	char INPUT_PATH[1000];
 	char OUTPUT_PATH[1000];
-	#ifdef _WIN32 
+	#ifdef _WIN32
 		GetModuleFileNameA(NULL, PROGRAM_PATH, 1000);
 		size_t index_path = strlen(PROGRAM_PATH);
 		while(PROGRAM_PATH[index_path] != '\\'){
@@ -679,8 +691,7 @@ int main(int argc, char *argv[]){
 	TokenList token_list;
 	token_list = lexer(KASM, MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT);
 	
-	HexaList hexa_list;
-	hexa_list = machineCodeEncoder(MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT, token_list);
+	machineCodeEncoder(MAX_INSTRUCTION_NUMBER, MAX_ARGUMENT_NUMBER, MAX_ARGUMENT_LENGHT, token_list);
 
 	//LEXER
     //TOKENIZER
@@ -691,7 +702,6 @@ int main(int argc, char *argv[]){
     fclose(KCM);
     fclose(KASM);
     free(token_list.data);
-	free(hexa_list.data);
     printf("Compilation Done !\n");
     return 0;
 }
