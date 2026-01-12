@@ -348,7 +348,13 @@ void compilationError(int i, char *word, char charactere, PosFile position_file,
 		break;
 
 		case 11 :
-		printf("\'*\' expected\n");
+		printf("\'*\' unexpected\n");
+		break;
+
+		case 12 :
+		printf("Wrong argument type for dereferencing\n");
+		printf("EXPECTED : REGISTER_OR_RAM_ADRESS\n");
+		printf("RECEIVED : %s\n", word);
 		break;
 		
 	}
@@ -419,6 +425,7 @@ TokenList lexer(
 	PosFile last_end_word = {0,0};
 	PosFile beginning_word = {0,0};
 	PosFile last_keyword = {0,0};
+	PosFile last_star = {0,0};
 	for(char *c = content_file.data; *c ; c++){
 		// Check Overflow for word
 		if(word_index >= max_argument_lenght){
@@ -470,6 +477,8 @@ TokenList lexer(
 						compilationError(6, word, ' ', beginning_word, 0, 0);
 					}
 					
+					// Set the Type of the token (REG Adress, RAM Adress, Value...)
+					
 					if(word[0] >= '0' && word[0] <= '9'){
 						token_list.data[token_index].type = VALUE;
 					}
@@ -496,6 +505,9 @@ TokenList lexer(
 						break;
 					}
 
+					// By default an argument is not a pointer
+					token_list.data[token_index].is_pointer = false;
+
 					// argument_count - 1 because it's an index, not a count in this case
 					char current_enum[25];
 					strcpy(current_enum, TOKEN_TYPE_NAME_TABLE[token_list.data[token_index].type]);
@@ -504,13 +516,20 @@ TokenList lexer(
 							// Wrong type of argument
 							compilationError(7, current_enum, ' ', beginning_word, current_keyword_index, argument_count - 1);
 						}
+						if(is_pointer){ token_list.data[token_index].is_pointer = true; }
 					}
 					else if(token_list.data[token_index].type != ARGUMENT_ARCHITECTURE[current_keyword_index][argument_count - 1]){
 						// Wrong type of argument
 						compilationError(7, current_enum, ' ', beginning_word, current_keyword_index, argument_count - 1);
 					}
 
+					if(token_list.data[token_index].type != REGISTER_ADRESS && token_list.data[token_index].type != RAM_ADRESS && is_pointer){
+						compilationError(12, current_enum, ' ', last_star, 0, 0);
+					}
+					
+					// Set the data of the token (Value, adress...)
 					token_list.data[token_index].data = atoi(word + is_adress);
+					is_pointer = false;
 				}
 				// If it's a KEYWORD
 				else{ 
@@ -533,23 +552,26 @@ TokenList lexer(
 			// If the charactere is not valid
 			else if(!isValidChar(*c)){
 				// charactere not valid
-				compilationError(11, "", *c, position_file, 0, 0);
+				compilationError(1, "", *c, position_file, 0, 0);
 			}
 			// If the charactere is valid
 			else if(!isSeparatorChar(*c)){
 				// if there's a * inside an argument
 				if(on_word && *c == '*'){
-					compilationError(7, word, ' ', position_file, 0, 0);
+					compilationError(11, word, ' ', position_file, 0, 0);
 				}
 				else if(!on_word && *c == '*'){
 					is_pointer = true;
+					last_star = position_file;
 				}
-				if(!on_word){
-					beginning_word = position_file;
+				else{
+					if(!on_word){
+						beginning_word = position_file;
+					}
+					word[word_index] = *c;
+					word_index++;
+					on_word = true;
 				}
-				word[word_index] = *c;
-				word_index++;
-				on_word = true;
 			}
 
 			switch(*c){
@@ -558,6 +580,9 @@ TokenList lexer(
 				if(last_instruction_close){
 					// ‘;’ unexpected
 					compilationError(9, word, ' ', position_file, 0, 0);
+				}
+				if(is_pointer){
+					compilationError(11, word, ' ', last_star, 0, 0);
 				}
 
 				if(argument_count < ARGUMENT_NUMBER[current_keyword_index]){
@@ -687,6 +712,8 @@ int main(int argc, char *argv[]){
     
     //Generate token from te standarize program
 	
+	int a = 2;
+
 	
     fclose(KCM);
     fclose(KASM);

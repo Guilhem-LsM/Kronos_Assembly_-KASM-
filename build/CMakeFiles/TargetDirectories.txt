@@ -1,3 +1,3 @@
-C:/Users/vvilh/OneDrive/Documents/git/Kronos_Assembly_-KASM-/build/CMakeFiles/KASMCompiler.dir
-C:/Users/vvilh/OneDrive/Documents/git/Kronos_Assembly_-KASM-/build/CMakeFiles/edit_cache.dir
-C:/Users/vvilh/OneDrive/Documents/git/Kronos_Assembly_-KASM-/build/CMakeFiles/rebuild_cache.dir
+C:/Users/vvilh/Documents/git/Kronos_Assembly_-KASM-/build/CMakeFiles/KASMCompiler.dir
+C:/Users/vvilh/Documents/git/Kronos_Assembly_-KASM-/build/CMakeFiles/edit_cache.dir
+C:/Users/vvilh/Documents/git/Kronos_Assembly_-KASM-/build/CMakeFiles/rebuild_cache.dir
