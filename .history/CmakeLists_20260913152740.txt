@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.23)
+
+project(KronosAssembly C)
+
+add_executable(KASM)
+
+target_sources(KASM
+    PRIVATE
+    # Source
+        src/main.c
+    # Lib's Sources
+        libs/SayHelloWorld.c
+    PUBLIC 
+    FILE_SET HEADERS 
+    BASE_DIRS
+        include
+    FILES 
+        #Lib's Headers
+        include/SayHelloWorld.h
+)

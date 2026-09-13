@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.23)
+
+project(KronosAssembly C)
+
+add_executable(KASM)
+
+target_sources(KASM
+    PRIVATE
+        main.c
+        libs/prout.c
+    PUBLIC 
+    FILE_SET HEADERS 
+    BASE_DIRS
+        include
+    FILES 
+        include/prout.h
+)

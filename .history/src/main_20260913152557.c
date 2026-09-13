@@ -3,6 +3,6 @@
 
 int main()
 {   
-    SayHelloWorld();
+    SayProut();
     return 0;
 }

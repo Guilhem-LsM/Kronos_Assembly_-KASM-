@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "SayHelloWorld.h"
 
 int main()
 {   
-    SayHelloWorld();
+    int a = 45;
+    printf(a);
     return 0;
 }
