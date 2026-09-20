@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "GetProgramInString.h"
 
 int main(int argc, char **argv)
@@ -15,7 +14,6 @@ int main(int argc, char **argv)
         printf("ERROR");
         return 1;
     }
-    raw_program = GetProgramInString(path);
-    free(raw_program);
+    program = GetProgramInString(path);
     return 0;
 }

@@ -1,0 +1,2 @@
+
+char* GetProgramInString(char* path);

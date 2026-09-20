@@ -51,8 +51,8 @@ build CMakeFiles/KASM.dir/src/main.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/
   OBJECT_FILE_DIR = CMakeFiles\KASM.dir\src
   TARGET_SUPPORT_DIR = CMakeFiles\KASM.dir
 
-build CMakeFiles/KASM.dir/libs/SayHelloWorld.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/SayHelloWorld.c || cmake_object_order_depends_target_KASM
-  DEP_FILE = CMakeFiles\KASM.dir\libs\SayHelloWorld.c.obj.d
+build CMakeFiles/KASM.dir/libs/GetProgramInString.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/GetProgramInString.c || cmake_object_order_depends_target_KASM
+  DEP_FILE = CMakeFiles\KASM.dir\libs\GetProgramInString.c.obj.d
   INCLUDES = -IC:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/include
   OBJECT_DIR = CMakeFiles\KASM.dir
   OBJECT_FILE_DIR = CMakeFiles\KASM.dir\libs
@@ -66,7 +66,7 @@ build CMakeFiles/KASM.dir/libs/SayHelloWorld.c.obj: C_COMPILER__KASM_unscanned_ 
 #############################################
 # Link the executable KASM.exe
 
-build KASM.exe: C_EXECUTABLE_LINKER__KASM_ CMakeFiles/KASM.dir/src/main.c.obj CMakeFiles/KASM.dir/libs/SayHelloWorld.c.obj
+build KASM.exe: C_EXECUTABLE_LINKER__KASM_ CMakeFiles/KASM.dir/src/main.c.obj CMakeFiles/KASM.dir/libs/GetProgramInString.c.obj
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\KASM.dir
   POST_BUILD = cd .
