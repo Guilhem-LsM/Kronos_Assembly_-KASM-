@@ -1,0 +1,4 @@
+Variables : snake_case
+Functions : PascalCase
+Constant : UPPPER_CASE
+Enum : kebab-case

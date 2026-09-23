@@ -1,0 +1,4 @@
+Variables : snake_case
+Functions : snake_case
+Constant : SCREAMING_SNAKE_CASE
+Enum : snake_case
