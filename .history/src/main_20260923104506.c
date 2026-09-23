@@ -14,14 +14,14 @@ int main(int argc, char **argv)
         printf("ERROR 1");
         return 1;
     }
-    raw_program = GetProgram(path);
+    raw_program = GetProgramInString(path);
     free(raw_program);
     return 0;
 }
 
 // Functions
 
-char* GetProgram(char* path)
+char* GetProgramInString(char* path)
 {
     FILE *fp = fopen(path, "rb"); // Open the file in binary mode
 
