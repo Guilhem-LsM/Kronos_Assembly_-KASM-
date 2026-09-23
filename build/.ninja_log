@@ -7,3 +7,11 @@
 21	152	8118866455979700	CMakeFiles/KASM.dir/libs/Tokenizer.c.obj	74c84ebd707be6f2
 16	143	8118866929202736	CMakeFiles/KASM.dir/libs/ErrorManager.c.obj	e8d6b69d43f227f
 23	191	8118865582527630	CMakeFiles/KASM.dir/libs/FileManager.c.obj	873e15f0ac330f1b
+3	158	8118877753001152	CMakeFiles/KASM.dir/src/main.c.obj	67d62aa474197957
+16	166	8118877753120339	CMakeFiles/KASM.dir/libs/error_manager.c.obj	87e124a963e78635
+9	168	8118877753061870	CMakeFiles/KASM.dir/libs/tokenizer.c.obj	9381efda8d18ef97
+14	149	8118877922199898	CMakeFiles/KASM.dir/src/main.c.obj	67d62aa474197957
+33	174	8118877922392157	CMakeFiles/KASM.dir/libs/file_manager.c.obj	8f667b99434a3c18
+26	175	8118877922325799	CMakeFiles/KASM.dir/libs/error_manager.c.obj	87e124a963e78635
+20	175	8118877922271623	CMakeFiles/KASM.dir/libs/tokenizer.c.obj	9381efda8d18ef97
+176	355	8118877923822426	KASM.exe	9e5ad72c65599eb

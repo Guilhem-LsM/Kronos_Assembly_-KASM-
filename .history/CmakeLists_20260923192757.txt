@@ -18,7 +18,7 @@ target_sources(KASM
         include
     FILES 
         #Lib's Headers
-        include/tokenizer.h
+        include/Tokenizer.h
         include/error_manager.h
         include/file_manager.h
 )

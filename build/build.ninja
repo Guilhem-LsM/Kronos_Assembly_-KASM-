@@ -51,22 +51,22 @@ build CMakeFiles/KASM.dir/src/main.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/
   OBJECT_FILE_DIR = CMakeFiles\KASM.dir\src
   TARGET_SUPPORT_DIR = CMakeFiles\KASM.dir
 
-build CMakeFiles/KASM.dir/libs/Tokenizer.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/Tokenizer.c || cmake_object_order_depends_target_KASM
-  DEP_FILE = CMakeFiles\KASM.dir\libs\Tokenizer.c.obj.d
+build CMakeFiles/KASM.dir/libs/tokenizer.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/tokenizer.c || cmake_object_order_depends_target_KASM
+  DEP_FILE = CMakeFiles\KASM.dir\libs\tokenizer.c.obj.d
   INCLUDES = -IC:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/include
   OBJECT_DIR = CMakeFiles\KASM.dir
   OBJECT_FILE_DIR = CMakeFiles\KASM.dir\libs
   TARGET_SUPPORT_DIR = CMakeFiles\KASM.dir
 
-build CMakeFiles/KASM.dir/libs/ErrorManager.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/ErrorManager.c || cmake_object_order_depends_target_KASM
-  DEP_FILE = CMakeFiles\KASM.dir\libs\ErrorManager.c.obj.d
+build CMakeFiles/KASM.dir/libs/error_manager.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/error_manager.c || cmake_object_order_depends_target_KASM
+  DEP_FILE = CMakeFiles\KASM.dir\libs\error_manager.c.obj.d
   INCLUDES = -IC:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/include
   OBJECT_DIR = CMakeFiles\KASM.dir
   OBJECT_FILE_DIR = CMakeFiles\KASM.dir\libs
   TARGET_SUPPORT_DIR = CMakeFiles\KASM.dir
 
-build CMakeFiles/KASM.dir/libs/FileManager.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/FileManager.c || cmake_object_order_depends_target_KASM
-  DEP_FILE = CMakeFiles\KASM.dir\libs\FileManager.c.obj.d
+build CMakeFiles/KASM.dir/libs/file_manager.c.obj: C_COMPILER__KASM_unscanned_ C$:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/libs/file_manager.c || cmake_object_order_depends_target_KASM
+  DEP_FILE = CMakeFiles\KASM.dir\libs\file_manager.c.obj.d
   INCLUDES = -IC:/Users/vvilh/Documents/KASM/Kronos_Assembly_-KASM-/include
   OBJECT_DIR = CMakeFiles\KASM.dir
   OBJECT_FILE_DIR = CMakeFiles\KASM.dir\libs
@@ -80,7 +80,7 @@ build CMakeFiles/KASM.dir/libs/FileManager.c.obj: C_COMPILER__KASM_unscanned_ C$
 #############################################
 # Link the executable KASM.exe
 
-build KASM.exe: C_EXECUTABLE_LINKER__KASM_ CMakeFiles/KASM.dir/src/main.c.obj CMakeFiles/KASM.dir/libs/Tokenizer.c.obj CMakeFiles/KASM.dir/libs/ErrorManager.c.obj CMakeFiles/KASM.dir/libs/FileManager.c.obj
+build KASM.exe: C_EXECUTABLE_LINKER__KASM_ CMakeFiles/KASM.dir/src/main.c.obj CMakeFiles/KASM.dir/libs/tokenizer.c.obj CMakeFiles/KASM.dir/libs/error_manager.c.obj CMakeFiles/KASM.dir/libs/file_manager.c.obj
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\KASM.dir
   POST_BUILD = cd .
