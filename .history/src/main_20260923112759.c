@@ -7,7 +7,6 @@
 #define PROGRAM_FILE_NOT_FOUND 1 // Program file not found
 #define FSEEK_FAILED 2 // The fseek() function has failed
 #define NO_PATH 3 // No path has been specified
-#define MALLOC_FAILED 4 // Memory allocation failed
 
 // Functions
 
@@ -31,10 +30,10 @@ char* GetProgram(char* path)
 
     // Alocate the right size of memory
     char *raw_program = malloc(size); // Create and alloscate the right amount of memory on the heap 
-    // Check if the malloc() failed
+
     if(!raw_program)
     {
-        Error(MALLOC_FAILED);
+
     }
 
     // Get the datas of the files in raw_program

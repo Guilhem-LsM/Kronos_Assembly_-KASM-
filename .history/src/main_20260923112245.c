@@ -5,9 +5,7 @@
 
 // Errors list
 #define PROGRAM_FILE_NOT_FOUND 1 // Program file not found
-#define FSEEK_FAILED 2 // The fseek() function has failed
-#define NO_PATH 3 // No path has been specified
-#define MALLOC_FAILED 4 // Memory allocation failed
+#define FSEEK_FAILED 1 // The fseek() function has failed
 
 // Functions
 
@@ -21,27 +19,18 @@ char* GetProgram(char* path)
         Error(PROGRAM_FILE_NOT_FOUND); 
     }
 
-    if (fseek(fp, 0L, SEEK_END) < 0) 
-    {
-        fclose(fp);
-        Error(FSEEK_FAILED); 
+    if (fseek(fp, 0L, SEEK_END) < 0) {
+        Error(FSEEK_FAILED);
     }
 
     size_t size = ftell(fp) + 1; // Get the position of the cursor, so the size
 
-    // Alocate the right size of memory
     char *raw_program = malloc(size); // Create and alloscate the right amount of memory on the heap 
-    // Check if the malloc() failed
-    if(!raw_program)
-    {
-        Error(MALLOC_FAILED);
-    }
 
     // Get the datas of the files in raw_program
-    if (fseek(fp, 0, SEEK_SET) < 0) 
-    {
+    if (fseek(fp, 0, SEEK_SET) < 0) {
         fclose(fp);
-        Error(FSEEK_FAILED); 
+        return "ERROR 3";
     }
     fread(raw_program, 1, size, fp);
     raw_program[size-1] = '\0'; // add a end to the string
@@ -61,7 +50,8 @@ int main(int argc, char **argv)
     }
     else
     {
-        Error(NO_PATH);
+        printf("ERROR 1");
+        return 1;
     }
     raw_program = GetProgram(path);
     free(raw_program);

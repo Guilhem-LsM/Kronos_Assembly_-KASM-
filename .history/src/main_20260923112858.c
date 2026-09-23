@@ -31,10 +31,10 @@ char* GetProgram(char* path)
 
     // Alocate the right size of memory
     char *raw_program = malloc(size); // Create and alloscate the right amount of memory on the heap 
-    // Check if the malloc() failed
+
     if(!raw_program)
     {
-        Error(MALLOC_FAILED);
+        Error();
     }
 
     // Get the datas of the files in raw_program
