@@ -28,6 +28,7 @@ char* GetProgramInString(char* path)
     }
     fread(raw_program, 1, size, fp);
     raw_program[size-1] = '\0'; // add a end to the string
-        
+    printf("%s", raw_program);
+    
     return raw_program;
 }
