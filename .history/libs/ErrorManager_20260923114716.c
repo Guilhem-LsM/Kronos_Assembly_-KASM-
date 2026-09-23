@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// All the defines are in the .h
+// All the define are in the .h
 
 void Error(unsigned int index)
 {

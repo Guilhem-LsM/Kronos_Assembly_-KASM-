@@ -23,7 +23,7 @@ char* GetProgram(char* path)
         Error(FSEEK_FAILED); 
     }
 
-    size_t size = ftell(fp) + 2; // Get the cursor position, which gives us the size. The +2 gives us the space we need to add a space, which is useful for the tokenizer, and a character indicating the end of the string
+    size_t size = ftell(fp) + 1; // Get the position of the cursor, so the size
 
     // Alocate the right size of memory
     char *raw_program = malloc(size); // Create and alloscate the right amount of memory on the heap 
@@ -40,8 +40,21 @@ char* GetProgram(char* path)
         Error(FSEEK_FAILED); 
     }
     fread(raw_program, 1, size, fp);
-    raw_program[size-2] = ' ';  // add a separator char as the last char in the string, useful for the tokenizer
     raw_program[size-1] = '\0'; // add a end to the string
+
+    // Cleaning the program
+    char* char_pointer = raw_program;
+    while(*char_pointer != '\0') // While we haven't reached the end of the string
+    {   
+        for(int i = 0; i < UNWANTED_CHARS_NUMBER; i++) // Check if the current char is in the unwanted chars list
+        {
+            if(*char_pointer == UNWANTED_CHARS[i])
+            {
+                *char_pointer = ' ';                   // If it's an unwanted char, replace it by a space char
+            }
+        }
+        char_pointer++;                                // Going to the next char     
+    }
 
     return raw_program;
 }

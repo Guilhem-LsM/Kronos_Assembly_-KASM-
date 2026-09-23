@@ -19,7 +19,6 @@ int main(int argc, char **argv)
         Error(NO_PATH);
     }
     raw_program = GetProgram(path);
-    printf("%s", raw_program);
     free(raw_program);
     return 0;
 }
