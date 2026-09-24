@@ -87,20 +87,20 @@ void synthaxe_debug(struct token* token_list)
             if(argument_counter > NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type]) // If there's too much arguments
             {
                 error(_TOO_M_ARG_, 
-                    instruction_line,
-                    instruction_char,
-                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type],
-                    "",
+                    instruction_line, 
+                    instruction_char, 
+                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type], 
+                    "", 
                     argument_counter);
             }
 
             if(argument_counter < NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type]) // If there's too few arguments
             {
                 error(_TOO_F_ARG_, 
-                    instruction_line,
-                    instruction_char,
-                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type],
-                    "",
+                    instruction_line, 
+                    instruction_char, 
+                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type], 
+                    "", 
                     argument_counter);
             }
 

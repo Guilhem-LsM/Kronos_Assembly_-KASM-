@@ -63,13 +63,13 @@ void synthaxe_debug(struct token* token_list)
             instruction_char = current_token->char_;
         }
         else if(current_token->type != _INSTRUCTION_ENDING_) // if the token's type is not an instruction ending
-        {   
-            int expected_type = INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter];
-            if((current_token->type != expected_type 
-                && expected_type != _RAM_REGISTER_ADRESS_)
-                || (expected_type == _RAM_REGISTER_ADRESS_ 
-                && current_token->type != _RAM_ADRESS_ 
-                && current_token->type != _REGISTER_ADRESS_))
+        {
+            if(
+                (current_token->type != INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter] 
+            && INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter] != _RAM_REGISTER_ADRESS_)
+            || 
+            (INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter] == _RAM_REGISTER_ADRESS_ 
+            && current_token->type != _RAM_ADRESS_ && current_token->type != _REGISTER_ADRESS_))
             {
                 error(
                     _WRONG_ARG_TYPE_, 
@@ -87,20 +87,20 @@ void synthaxe_debug(struct token* token_list)
             if(argument_counter > NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type]) // If there's too much arguments
             {
                 error(_TOO_M_ARG_, 
-                    instruction_line,
-                    instruction_char,
-                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type],
-                    "",
+                    instruction_line, 
+                    instruction_char, 
+                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type], 
+                    "", 
                     argument_counter);
             }
 
             if(argument_counter < NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type]) // If there's too few arguments
             {
                 error(_TOO_F_ARG_, 
-                    instruction_line,
-                    instruction_char,
-                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type],
-                    "",
+                    instruction_line, 
+                    instruction_char, 
+                    NUMBER_OF_ARGUMENT_PER_INSTRUCTION[instruction_type], 
+                    "", 
                     argument_counter);
             }
 
