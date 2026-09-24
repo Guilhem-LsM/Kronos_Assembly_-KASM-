@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "error_manager.h"
-#include "token.h"
+#include "tokenizer.h"
 #include "string_functions.h"
 
 #define LEXEME_MAX_SIZE 10
@@ -58,6 +58,33 @@ const char* VALID_KEYWORDS[24] =
     
 };
 
+const char* TOKEN_TYPE_STRING[10] =
+{
+    "_KEYWORD_",
+    "_VALUE_",
+    "_RAM_ADRESS_",
+    "_REGISTER_ADRESS_",
+    "_INPUT_ADRESS_",
+    "_OUTPUT_ADRESS_",
+    "_LINE_ADRESS_", 
+    "_INSTRUCTION_ENDING_",
+    "_RAM_REGISTER_ADRESS_",
+    "_NULL_"
+};
+
+void print_token(const struct token* token)
+{
+    printf("---------------------\n");
+    printf("Adress : %p\n", token);
+    printf("Type : %i\n", token->type);
+    printf("Value : %i\n", token->value);
+    printf("Is dereference : %d\n", token->is_dereference);
+    printf("Line : %i\n", token->line);
+    printf("Char : %i\n", token->char_);
+    printf("Next : %p\n", token->next);
+    printf("---------------------\n");
+}
+
 struct token* tokenize(char* raw_program){
     char lexeme[LEXEME_MAX_SIZE + 1] = ""; // Add +1 to put a \0 at the end of the lexeme
     unsigned int lexeme_index = 0;
@@ -91,6 +118,9 @@ struct token* tokenize(char* raw_program){
             line++;
         }
      
+
+
+        
         if(is_char_in_array(*char_pointer, SEPARATION_CHARS, SEPARATION_CHAR_NUMBER)) // If the char is a separator
         {
             if(in_lexeme) //If the lexeme just end

@@ -91,6 +91,9 @@ struct token* tokenize(char* raw_program){
             line++;
         }
      
+
+
+        
         if(is_char_in_array(*char_pointer, SEPARATION_CHARS, SEPARATION_CHAR_NUMBER)) // If the char is a separator
         {
             if(in_lexeme) //If the lexeme just end
