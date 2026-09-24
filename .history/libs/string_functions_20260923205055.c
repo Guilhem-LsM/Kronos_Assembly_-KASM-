@@ -5,7 +5,6 @@
 #include <string.h>
 #include "error_manager.h"
 #include "tokenizer.h"
-#include "string_functions.h"
 
 #define LEXEME_MAX_SIZE 10
 #define SEPARATION_CHAR_NUMBER 6
@@ -53,6 +52,48 @@ const char* VALID_KEYWORDS[21] =
     "in",
     "out"
 };
+
+// Private functions
+
+bool is_char_in_array(char char_, const char* array, size_t array_size)
+{
+    for(int i = 0; i < array_size; i++)
+    {
+        if(array[i] == char_)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+int is_string_in_array(char* string, const char** array, size_t array_size)
+{
+    for(int i = 0; i < array_size; i++)
+    {
+        if(strcmp(array[i], string) == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+} 
+
+bool is_only_number_in_string(char* string)
+{   
+    char* char_ = string;
+    while(*char_ != '\0')
+    {
+        if((int)*char_ < '0' || (int)*char_ > '9') // If the char is not a number (in ascii table)
+        {
+            return false;
+        }
+        char_++;
+    }
+    return true;
+}
+
+// Public functions
 
 struct token* tokenize(char* raw_program){
     char lexeme[LEXEME_MAX_SIZE + 1] = ""; // Add +1 to put a \0 at the end of the lexeme

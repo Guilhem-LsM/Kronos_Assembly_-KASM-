@@ -5,7 +5,6 @@
 #include <string.h>
 #include "error_manager.h"
 #include "tokenizer.h"
-#include "string_functions.h"
 
 #define LEXEME_MAX_SIZE 10
 #define SEPARATION_CHAR_NUMBER 6
