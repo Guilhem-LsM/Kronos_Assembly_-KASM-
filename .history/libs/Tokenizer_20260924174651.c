@@ -114,7 +114,7 @@ static void determine_token_type_and_value(struct token* token_, char* lexeme, i
     }
 }
 
-
+// 144 lines
     // Public
 struct token* tokenize(char* raw_program){
     char lexeme[LEXEME_MAX_SIZE + 1] = ""; // Add +1 to put a \0 at the end of the lexeme

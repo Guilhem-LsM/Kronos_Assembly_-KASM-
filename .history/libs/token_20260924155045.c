@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "token.h"
-#include "error_manager.h"
 
 // Const
 const char* TOKEN_TYPE_STRING[10] =
@@ -33,27 +32,15 @@ void print_token(const struct token* token)
     printf("---------------------\n");
 }
 
-struct token* new_token(
+struct token* new_node(
     enum TOKEN_TYPE type,
     int value,
     bool is_dereference,
     size_t line,
-    size_t char_,
-    struct token *next
+    size_t char_
 )
 {
-    struct token* token_ = malloc(sizeof(struct token));
-    if(!token_)
-    {
-        error(_MALLOC_FAILED_, 0, 0, 0, "", 0);
-    }
-    token_->type = type;
-    token_->value = value;
-    token_->is_dereference = is_dereference;
-    token_->line = line;
-    token_->char_ = char_;
-    token_->next = next;
-    return token_;
+    struct token* token_ = {type, value, is_dereference, line, char_};
 }
 
 

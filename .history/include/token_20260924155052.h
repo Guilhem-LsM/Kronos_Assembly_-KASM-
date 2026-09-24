@@ -33,13 +33,13 @@ struct token
 // Function
 void print_token(const struct token* token);
 
-struct token* new_token(
+struct token* new_node(
     enum TOKEN_TYPE type,
     int value,
     bool is_dereference,
     size_t line,
     size_t char_,
-    struct token *next
+    struct token *next;
 );
 
 

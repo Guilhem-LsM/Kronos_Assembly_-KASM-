@@ -33,7 +33,7 @@ void print_token(const struct token* token)
     printf("---------------------\n");
 }
 
-struct token* new_token(
+struct token* new_node(
     enum TOKEN_TYPE type,
     int value,
     bool is_dereference,

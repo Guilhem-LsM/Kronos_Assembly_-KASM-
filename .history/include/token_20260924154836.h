@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 // Const
+
 enum TOKEN_TYPE 
 {
     _KEYWORD_,
@@ -20,6 +21,7 @@ enum TOKEN_TYPE
 const char* TOKEN_TYPE_STRING[10];
 
 // Struct
+
 struct token
 {
     enum TOKEN_TYPE type;
@@ -31,15 +33,15 @@ struct token
 };
 
 // Function
+
 void print_token(const struct token* token);
 
-struct token* new_token(
+struct token* new_node(
     enum TOKEN_TYPE type,
     int value,
     bool is_dereference,
     size_t line,
-    size_t char_,
-    struct token *next
+    size_t char_
 );
 
 

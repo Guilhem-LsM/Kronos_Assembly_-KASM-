@@ -60,9 +60,9 @@ static const char* VALID_KEYWORDS[24] =
 
 // Functions
     // Private
-static void is_char_valid(char char_, unsigned int line, unsigned int char__)
+static void is_char_valid(char char_, const char* VALID_CHARS, unsigned int VALID_CHAR_NUMBER_, unsigned int line, unsigned int char__)
 {
-    if(!is_char_in_array(tolower(char_), VALID_CHARS, VALID_CHAR_NUMBER)) // Checking if the char is invalid
+    if(!is_char_in_array(tolower(char_), VALID_CHARS, VALID_CHAR_NUMBER_)) // Checking if the char is invalid
         {
             error(_INVALID_CHAR_, line, char__, (int)char_, "", 0);
         }
@@ -114,7 +114,7 @@ static void determine_token_type_and_value(struct token* token_, char* lexeme, i
     }
 }
 
-
+// 144 lines
     // Public
 struct token* tokenize(char* raw_program){
     char lexeme[LEXEME_MAX_SIZE + 1] = ""; // Add +1 to put a \0 at the end of the lexeme
@@ -128,10 +128,12 @@ struct token* tokenize(char* raw_program){
 
     while(*char_pointer != '\0')
     {   
-        is_char_valid(tolower(*char_pointer), line, char_);  // Is the current char valid
+        printf("-- %c\n", *char_pointer);
+        is_char_valid(tolower(*char_pointer), VALID_CHARS, VALID_CHAR_NUMBER, line, char_);  // Is the current char valid
         if(*char_pointer == '\n') { char_ = 0; line++; } // Checking if there’s a line break and update line and char_
         if(!is_char_in_array(*char_pointer, SEPARATION_CHARS, SEPARATION_CHAR_NUMBER)) // If the char is not a separator
         {   
+            printf("-a\n");
             if(lexeme[0] == '\0') // If the lexeme begin
             {
                 first_char_pos = char_;
@@ -142,8 +144,10 @@ struct token* tokenize(char* raw_program){
         }
         else // if the char is a separator 
         {
+            printf("b\n");
             if(lexeme[0] != '\0') //If lexeme is not empty
             {
+                printf("c\n");
                 lexeme[lexeme_index] = '\0';
                 lexeme_index = 0;
                 struct token* new_token_ = new_token(_NULL_, 0, false, 0, 0, NULL);
@@ -160,6 +164,7 @@ struct token* tokenize(char* raw_program){
 
             if(*char_pointer == ';')
             {
+                printf("e\n");
                 struct token* new_token_ = new_token(_INSTRUCTION_ENDING_, 0, false, line, char_, NULL);
                 if(current_token){current_token->next = new_token_;}
                 else{token_list = new_token_;}

@@ -36,10 +36,6 @@ static const int INSTRUCTIONS_ARCHITECTURE[24][3] =
     {_RAM_REGISTER_ADRESS_}
 };
 
-// Functions
-    // Private
-
-    //Public
 void synthaxe_debug(struct token* token_list)
 {
 
@@ -52,7 +48,7 @@ void synthaxe_debug(struct token* token_list)
     while (current_token)
     {
 
-        if(instruction_type == -1 && current_token->type != _KEYWORD_) // If we are not in an instruction, and the type of the first token is not a keyword
+        if(instruction_type == -1 && current_token->type != _KEYWORD_) // If we are not in an instruction, and the type of the first token is a keyword
         {
             error(_FIRST_T_NOT_K_, current_token->line, current_token->char_, 0, TOKEN_TYPE_STRING[current_token->type], 0);
         }
@@ -64,7 +60,6 @@ void synthaxe_debug(struct token* token_list)
         }
         else if(current_token->type != _INSTRUCTION_ENDING_) // if the token's type is not an instruction ending
         {
-        
             if(INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter] == _RAM_REGISTER_ADRESS_ && (current_token->type != _RAM_ADRESS_ && current_token->type != _REGISTER_ADRESS_))
             {
                 error(_WRONG_ARG_TYPE_, current_token->line, current_token->char_, INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter], "", current_token->type);

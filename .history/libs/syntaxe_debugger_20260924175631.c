@@ -64,7 +64,6 @@ void synthaxe_debug(struct token* token_list)
         }
         else if(current_token->type != _INSTRUCTION_ENDING_) // if the token's type is not an instruction ending
         {
-        
             if(INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter] == _RAM_REGISTER_ADRESS_ && (current_token->type != _RAM_ADRESS_ && current_token->type != _REGISTER_ADRESS_))
             {
                 error(_WRONG_ARG_TYPE_, current_token->line, current_token->char_, INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter], "", current_token->type);

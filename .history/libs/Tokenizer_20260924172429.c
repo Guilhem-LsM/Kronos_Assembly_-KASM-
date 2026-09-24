@@ -60,9 +60,9 @@ static const char* VALID_KEYWORDS[24] =
 
 // Functions
     // Private
-static void is_char_valid(char char_, unsigned int line, unsigned int char__)
+static void is_char_valid(char char_, const char* VALID_CHARS, unsigned int VALID_CHAR_NUMBER_, unsigned int line, unsigned int char__)
 {
-    if(!is_char_in_array(tolower(char_), VALID_CHARS, VALID_CHAR_NUMBER)) // Checking if the char is invalid
+    if(!is_char_in_array(tolower(char_), VALID_CHARS, VALID_CHAR_NUMBER_)) // Checking if the char is invalid
         {
             error(_INVALID_CHAR_, line, char__, (int)char_, "", 0);
         }
@@ -114,7 +114,7 @@ static void determine_token_type_and_value(struct token* token_, char* lexeme, i
     }
 }
 
-
+// 144 lines
     // Public
 struct token* tokenize(char* raw_program){
     char lexeme[LEXEME_MAX_SIZE + 1] = ""; // Add +1 to put a \0 at the end of the lexeme
@@ -123,15 +123,16 @@ struct token* tokenize(char* raw_program){
     size_t line = 0;
     size_t char_ = 0;
     size_t first_char_pos = 0;
-    struct token* token_list = NULL;
-    struct token* current_token = NULL;
+    struct token* token_list = new_token(_NULL_, 0, false, 0, 0, NULL);
+    struct token* current_token = token_list;
 
     while(*char_pointer != '\0')
     {   
-        is_char_valid(tolower(*char_pointer), line, char_);  // Is the current char valid
+        is_char_valid(tolower(*char_pointer), VALID_CHARS, VALID_CHAR_NUMBER, line, char_);  // Is the current char valid
         if(*char_pointer == '\n') { char_ = 0; line++; } // Checking if there’s a line break and update line and char_
         if(!is_char_in_array(*char_pointer, SEPARATION_CHARS, SEPARATION_CHAR_NUMBER)) // If the char is not a separator
         {   
+            printf("a\n");
             if(lexeme[0] == '\0') // If the lexeme begin
             {
                 first_char_pos = char_;
@@ -142,27 +143,28 @@ struct token* tokenize(char* raw_program){
         }
         else // if the char is a separator 
         {
+            printf("b\n");
             if(lexeme[0] != '\0') //If lexeme is not empty
             {
+                printf("c\n");
                 lexeme[lexeme_index] = '\0';
                 lexeme_index = 0;
-                struct token* new_token_ = new_token(_NULL_, 0, false, 0, 0, NULL);
-                determine_token_type_and_value(new_token_, lexeme, line, char_);
+                determine_token_type_and_value(current_token, lexeme, line, char_);
                 lexeme[0] = '\0';
-                if(*char_pointer == '*') { new_token_->is_dereference = true; }
-                new_token_->line = line;
-                new_token_->char_ = first_char_pos;
-                if(current_token){current_token->next = new_token_;}
-                else{token_list = new_token_;}
+                if(*char_pointer == '*') { current_token->is_dereference = true; }
+                current_token->line = line;
+                current_token->char_ = first_char_pos;
+                struct token* new_token_ = new_token(_NULL_, 0, false, 0, 0, NULL);
+                current_token->next = new_token_;
                 current_token = new_token_;
             }
             else if(*char_pointer == '*'){ error(_UNEXPECTED_AST_, line, char_, 0, "", 0); printf("d\n");}
 
             if(*char_pointer == ';')
             {
+                printf("a\e");
                 struct token* new_token_ = new_token(_INSTRUCTION_ENDING_, 0, false, line, char_, NULL);
-                if(current_token){current_token->next = new_token_;}
-                else{token_list = new_token_;}
+                current_token->next = new_token_;
                 current_token = new_token_;
             }
         }
