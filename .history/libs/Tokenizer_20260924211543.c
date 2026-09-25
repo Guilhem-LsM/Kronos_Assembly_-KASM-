@@ -26,9 +26,9 @@ static const char VALID_CHARS[] =
     '*', ';', ' ', '\t',
     '\n', '\r', '0', '1',
     '2', '3', '4', '5',
-    '6', '7', '8', '9'
+    '6', '7', '8', '9',
 };
-
+ 
 static const char* VALID_KEYWORDS[24] =
 {
     "noop",
@@ -113,6 +113,7 @@ static void determine_token_type_and_value(struct token* token_, char* lexeme, i
         token_->value = which_keyword;
     }
 }
+
 
     // Public
 struct token* tokenize(char* raw_program){

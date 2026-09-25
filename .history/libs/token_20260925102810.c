@@ -15,7 +15,7 @@ const char* TOKEN_TYPE_STRING[10] =
     "_OUTPUT_ADRESS_",
     "_LINE_ADRESS_", 
     "_INSTRUCTION_ENDING_",
-    "_RAM_OR_REGISTER_ADRESS_",
+    "_RAM_REGISTER_ADRESS_",
     "_NULL_"
 };
 

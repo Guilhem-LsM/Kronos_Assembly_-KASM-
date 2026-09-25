@@ -29,73 +29,73 @@ void error(const unsigned int index, const size_t line, const size_t char_, cons
     switch (index)
     {
     case _PROGRAM_FILE_NOT_FOUND_: // Program file not found 
-        printf("ERROR %s : Program file not found ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Program file not found ", index);
         break;
 
     case _FSEEK_FAILED_: // fseek() has failed
-        printf("ERROR %s : fseek() has failed ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : fseek() has failed ", index);
         break;
     
     case _NO_PATH_: // No path has been specified
-        printf("ERROR %s : No path has been specified ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : No path has been specified ", index);
         break;
     
     case _MALLOC_FAILED_: // Memory allocation failed
-        printf("ERROR %s : Memory allocation failed ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Memory allocation failed ", index);
         break;
     
     case _INVALID_CHAR_: // Char is invalid
-        printf("ERROR %s : Char '%c' is invalid ", ERROR_TYPE_STRING[index], (char)data_1);
+        printf("ERROR %s : Char '%c' is invalid ", index, (char)data_1);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _LEXEME_TOO_LONG_: // Lexeme too long
-        printf("ERROR %s : Lexeme too long ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Lexeme too long ", index);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _INVALID_PREFIX_: // Invalid prefix
-        printf("ERROR %s : The prefix '%c' is invalid ", ERROR_TYPE_STRING[index], (char)data_1);
+        printf("ERROR %s : The prefix '%c' is invalid ", index, (char)data_1);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _INVALID_KEYWORD_: // Invalid keyword
-        printf("ERROR %s : The keyword \"%s\" is invalid ", ERROR_TYPE_STRING[index], string);
+        printf("ERROR %s : The keyword \"%s\" is invalid ", index, string);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _UNEXPECTED_AST_: // Unexpected asterisk
-        printf("ERROR %s : Unexpected asterisk, it must be placed at the end of an address ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Unexpected asterisk, it must be placed at the end of an address ", index);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _FIRST_T_NOT_K_: // Unexpected asterisks
-        printf("ERROR %s : Instruction must begin by a _KEYWORD_, yours begin by a %s ", ERROR_TYPE_STRING[index], string);
+        printf("ERROR %s : Instruction must begin by a _KEYWORD_, yours begin by a %s ", index, string);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _TOO_M_ARG_: // Too many argument in the instruction
-        printf("ERROR %s : Too many argument in the instruction [Exp : %i, Rec : %i] ", ERROR_TYPE_STRING[index], data_1, data_2);
+        printf("ERROR %s : Too many argument in the instruction [Exp : %i, Rec : %i] ", index, data_1, data_2);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _EXPECTED_SEMICOLON_: // Expected ';' at the end of the instruction
-        printf("ERROR %s : Expected ';' at the end of the instruction ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Expected ';' at the end of the instruction ", index);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _TOO_F_ARG_: // Too few argument in the instruction
-        printf("ERROR %s : Too few argument in the instruction [Exp : %i, Rec : %i] ", ERROR_TYPE_STRING[index], data_1, data_2);
+        printf("ERROR %s : Too few argument in the instruction [Exp : %i, Rec : %i] ", index, data_1, data_2);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _WRONG_ARG_TYPE_: // Wrong type of argument
-        printf("ERROR %s : Wrong type of argument [Exp : %s, Rec : %s] ", ERROR_TYPE_STRING[index], TOKEN_TYPE_STRING[data_1], TOKEN_TYPE_STRING[data_2]);
+        printf("ERROR %s : Wrong type of argument [Exp : %s, Rec : %s] ", index, TOKEN_TYPE_STRING[data_1], TOKEN_TYPE_STRING[data_2]);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     
     case _DEREFERENCE_W_TYPE_: // Wrong type of argument
-        printf("ERROR %s : Trying to dereference an incompatible type [Exp : _RAM_OR_REGISTER_ADRESS_, Rec : %s] ", ERROR_TYPE_STRING[index], TOKEN_TYPE_STRING[data_1]);
+        printf("ERROR %s : Trying to dereference an incompatible type [Exp : _RAM_OR_REGISTER_ADRESS_, Rec : %s]", index, TOKEN_TYPE_STRING[data_1]);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     

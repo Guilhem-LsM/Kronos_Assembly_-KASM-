@@ -95,7 +95,7 @@ void error(const unsigned int index, const size_t line, const size_t char_, cons
         break;
     
     case _DEREFERENCE_W_TYPE_: // Wrong type of argument
-        printf("ERROR %s : Trying to dereference an incompatible type [Exp : _RAM_OR_REGISTER_ADRESS_, Rec : %s] ", ERROR_TYPE_STRING[index], TOKEN_TYPE_STRING[data_1]);
+        printf("ERROR %s : Trying to dereference an incompatible type [Exp : _RAM_OR_REGISTER_ADRESS_, Rec : %s]", ERROR_TYPE_STRING[index], TOKEN_TYPE_STRING[data_1]);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     

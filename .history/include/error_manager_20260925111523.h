@@ -19,4 +19,5 @@ enum error_type
     _DEREFERENCE_W_TYPE_ // You can't dereference the type 
 };
 
+
 void error(const unsigned int index, const size_t line, const size_t char_, const int data_1, const char* string, const int data_2);

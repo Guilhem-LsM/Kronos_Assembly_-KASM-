@@ -25,15 +25,15 @@ static const int INSTRUCTIONS_ARCHITECTURE[24][3] =
     {_REGISTER_ADRESS_, _REGISTER_ADRESS_, _REGISTER_ADRESS_},
     {_REGISTER_ADRESS_, _REGISTER_ADRESS_, _REGISTER_ADRESS_},
     {_REGISTER_ADRESS_, _REGISTER_ADRESS_, _REGISTER_ADRESS_},
-    {_RAM_OR_REGISTER_ADRESS_, _VALUE_},
+    {_RAM_REGISTER_ADRESS_, _VALUE_},
     {_REGISTER_ADRESS_, _LINE_ADRESS_},
     {_LINE_ADRESS_},
-    {_OUTPUT_ADRESS_, _RAM_OR_REGISTER_ADRESS_},
-    {_INPUT_ADRESS_, _RAM_OR_REGISTER_ADRESS_},
-    {_RAM_OR_REGISTER_ADRESS_, _RAM_OR_REGISTER_ADRESS_},
-    {_RAM_OR_REGISTER_ADRESS_},
+    {_OUTPUT_ADRESS_, _RAM_REGISTER_ADRESS_},
+    {_INPUT_ADRESS_, _RAM_REGISTER_ADRESS_},
+    {_RAM_REGISTER_ADRESS_, _RAM_REGISTER_ADRESS_},
+    {_RAM_REGISTER_ADRESS_},
     {_NULL_},
-    {_RAM_OR_REGISTER_ADRESS_}
+    {_RAM_REGISTER_ADRESS_}
 };
 
 // Functions
@@ -66,8 +66,8 @@ void synthaxe_debug(struct token* token_list)
         {   
             int expected_type = INSTRUCTIONS_ARCHITECTURE[instruction_type][argument_counter];
             if((current_token->type != expected_type 
-                && expected_type != _RAM_OR_REGISTER_ADRESS_)
-                || (expected_type == _RAM_OR_REGISTER_ADRESS_ 
+                && expected_type != _RAM_REGISTER_ADRESS_)
+                || (expected_type == _RAM_REGISTER_ADRESS_ 
                 && current_token->type != _RAM_ADRESS_ 
                 && current_token->type != _REGISTER_ADRESS_))
             {
@@ -108,13 +108,6 @@ void synthaxe_debug(struct token* token_list)
             argument_counter = 0;
         }
         
-        if(current_token->type != _RAM_ADRESS_ && current_token->type != _REGISTER_ADRESS_)
-        {
-            if(current_token->is_dereference)
-            {
-                error(_DEREFERENCE_W_TYPE_, current_token->line, current_token->char_, current_token->type, "", 0);
-            }
-        }
 
         if(instruction_type != -1 && !current_token->next) // If the token list reach his end but the last instruction is not closed
         {
