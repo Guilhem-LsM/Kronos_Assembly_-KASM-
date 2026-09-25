@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.23)
+
+project(KronosAssembly C)
+
+add_executable(KASM)
+
+target_sources(KASM
+    PRIVATE
+    # Source
+        src/main.c
+    # Lib's Sources
+        libs/tokenizer.c
+        libs/error_manager.c
+        libs/file_manager.c
+        libs/string_functions.c
+        libs/syntaxe_debugger.c
+        libs/token.c
+    PUBLIC 
+    FILE_SET HEADERS 
+    BASE_DIRS
+        include
+    FILES 
+        #Lib's Headers
+        include/tokenizer.h
+        include/error_manager.h
+        include/file_manager.h
+        include/string_functions.h
+        include/syntaxe_debugger.h
+        include/token.h
+        include/assembly.h
+        include/range_debugger.h
+)
