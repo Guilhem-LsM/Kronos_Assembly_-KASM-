@@ -121,7 +121,8 @@ unsigned int* assembly(struct token* token_list)
         if(token_list->type == _KEYWORD_) // If the token type is a keyword
         {
             instruction_type = token_list->value;
-            machine_code_[0] = machine_code_[0] | instruction_type;
+            machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]]
+            = machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]] | instruction_type;
         }
         else if(token_list->type != _INSTRUCTION_ENDING_) // If the token type is an argument
         {

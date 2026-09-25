@@ -33,8 +33,7 @@ int main(int argc, char **argv)
     debug_range(token_list);
 
     unsigned int* machine_code;
-    machine_code = assembly(token_list);
-    free_linked_token(token_list);
+    machine_code = assem
     
     
 

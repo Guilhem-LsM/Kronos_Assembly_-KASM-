@@ -104,7 +104,7 @@ void print_binary(int num) {
     if (!started) {
         printf("0");
     }
-    printf(")");
+    
     printf("\n");
 }
 
@@ -121,7 +121,8 @@ unsigned int* assembly(struct token* token_list)
         if(token_list->type == _KEYWORD_) // If the token type is a keyword
         {
             instruction_type = token_list->value;
-            machine_code_[0] = machine_code_[0] | instruction_type;
+            machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]]
+            = machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]] | instruction_type;
         }
         else if(token_list->type != _INSTRUCTION_ENDING_) // If the token type is an argument
         {
@@ -132,9 +133,7 @@ unsigned int* assembly(struct token* token_list)
                 if(token_list->type == _RAM_ADRESS_){value++;}
             }
 
-            printf("- %i\n",ARGUMENT_POSITION_IN_BYTES[instruction_type][argument_counter]);
-            value = value << ARGUMENT_POSITION_IN_BYTES[instruction_type][argument_counter];
-            printf("-- %i\n",value);
+            value << ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter];
             machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]] 
             = machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]] | value;
             argument_counter++;

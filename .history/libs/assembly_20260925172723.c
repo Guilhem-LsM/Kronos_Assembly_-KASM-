@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "token.h"
-#include <limits.h>
 
 #define NULL_ 0
 
@@ -78,41 +77,10 @@ static size_t calculate_machine_code_array_size(struct token* token_list)
     return size;
 }
 
-void print_binary(int num) {
-    // Determine the number of bits in an integer (usually 32 bits)
-    printf("0(");
-    int total_bits = sizeof(int) * CHAR_BIT;
-    
-    // Flag to skip leading zeros for cleaner output
-    int started = 0; 
-
-    // Loop through each bit starting from the Most Significant Bit (MSB)
-    for (int i = total_bits - 1; i >= 0; i--) {
-        // Shift the number and check if the current bit is 1 or 0
-        int bit = (num >> i) & 1;
-        
-        if (bit == 1) {
-            started = 1; // Found the first non-zero bit
-        }
-        
-        if (started) {
-            printf("%d", bit);
-        }
-    }
-    
-    // If the number was 0, the loop prints nothing, so handle it here
-    if (!started) {
-        printf("0");
-    }
-    printf(")");
-    printf("\n");
-}
-
-
 unsigned int* assembly(struct token* token_list)
 {
     unsigned int size = calculate_machine_code_array_size(token_list);
-    unsigned int* machine_code = calloc(size, sizeof(unsigned int));
+    unsigned int* machine_code = malloc(size*sizeof(unsigned int));
     unsigned int* machine_code_ = machine_code;
     unsigned int argument_counter = 0;
     int instruction_type = -1;
@@ -121,20 +89,17 @@ unsigned int* assembly(struct token* token_list)
         if(token_list->type == _KEYWORD_) // If the token type is a keyword
         {
             instruction_type = token_list->value;
-            machine_code_[0] = machine_code_[0] | instruction_type;
         }
         else if(token_list->type != _INSTRUCTION_ENDING_) // If the token type is an argument
         {
-            unsigned int value = token_list->value;
+            int value = token_list->value;
             if(token_list->type == _RAM_ADRESS_ || token_list->type == _REGISTER_ADRESS_)
             {
                 value << 1;
                 if(token_list->type == _RAM_ADRESS_){value++;}
             }
 
-            printf("- %i\n",ARGUMENT_POSITION_IN_BYTES[instruction_type][argument_counter]);
-            value = value << ARGUMENT_POSITION_IN_BYTES[instruction_type][argument_counter];
-            printf("-- %i\n",value);
+            value << ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter];
             machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]] 
             = machine_code_[ARGUMENT_BYTE_NUMBER[instruction_type][argument_counter]] | value;
             argument_counter++;
@@ -152,7 +117,7 @@ unsigned int* assembly(struct token* token_list)
     printf("MACHINE CODE\n");
     for(int i = 0; i < size; i++)
     {
-        print_binary(machine_code[i]);
+        printf("%#b\n", machine_code[i]);
     }
 }
 

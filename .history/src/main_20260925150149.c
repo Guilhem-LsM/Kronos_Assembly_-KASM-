@@ -5,7 +5,6 @@
 #include "file_manager.h"
 #include "syntaxe_debugger.h"
 #include "range_manager.h"
-#include "assembly.h"
 
 int main(int argc, char **argv)
 {       
@@ -31,10 +30,7 @@ int main(int argc, char **argv)
     debug_synthax(token_list);
     replace_instruction_index_by_memory_addresses(token_list);
     debug_range(token_list);
-
-    unsigned int* machine_code;
-    machine_code = assembly(token_list);
-    free_linked_token(token_list);
+    printf("############################");
     
     
 

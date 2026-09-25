@@ -34,7 +34,6 @@ int main(int argc, char **argv)
 
     unsigned int* machine_code;
     machine_code = assembly(token_list);
-    free_linked_token(token_list);
     
     
 
