@@ -5,7 +5,7 @@
 #include "error_manager.h"
 
 // Const
-const char* TOKEN_TYPE_STRING[10] =
+const char* const TOKEN_TYPE_STRING[10] =
 {
     "_KEYWORD_",
     "_VALUE_",
@@ -18,7 +18,6 @@ const char* TOKEN_TYPE_STRING[10] =
     "_RAM_OR_REGISTER_ADRESS_",
     "_NULL_"
 };
-
 
 void print_token(const struct token* token)
 {

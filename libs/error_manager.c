@@ -34,11 +34,12 @@ void error(const unsigned int index, const size_t line, const size_t char_, cons
     switch (index)
     {
     case _PROGRAM_FILE_NOT_FOUND_: // Program file not found 
-        printf("ERROR %s : Program file not found ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Program file not found \n", ERROR_TYPE_STRING[index]);
+        printf("Path : %s\n", string);
         break;
 
     case _FSEEK_FAILED_: // fseek() has failed
-        printf("ERROR %s : fseek() has failed ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : fseek() has failed \n", ERROR_TYPE_STRING[index]);
         break;
     
     case _NO_PATH_: // No path has been specified
@@ -46,7 +47,7 @@ void error(const unsigned int index, const size_t line, const size_t char_, cons
         break;
     
     case _MALLOC_FAILED_: // Memory allocation failed
-        printf("ERROR %s : Memory allocation failed ", ERROR_TYPE_STRING[index]);
+        printf("ERROR %s : Memory allocation failed \n", ERROR_TYPE_STRING[index]);
         break;
     
     case _INVALID_CHAR_: // Char is invalid
@@ -120,7 +121,7 @@ void error(const unsigned int index, const size_t line, const size_t char_, cons
         break;
     
     case _INSTRUCTION_ADRESS_TOO_FAR_: // The instruction you tried to reach does not exist
-        printf("ERROR %s : The instruction you tried to reach does not exist [max instruction adress : %i] ", ERROR_TYPE_STRING[index], data_1);
+        printf("ERROR %s : The instruction you tried to reach does not exist [min : 1 max : %i] ", ERROR_TYPE_STRING[index], data_1);
         printf("ln:%u,ch:%u\n", line, char_);
         break;
     

@@ -10,7 +10,7 @@ int find_memory_adress_from_instruction_index(struct token* token_list, struct t
     size_t adress_counter = 0;
     size_t instruction_index_counter = 0;
     struct token* token_ = token_list;
-    while(instruction_index_counter < current_token->value)
+    while(instruction_index_counter < current_token->value-1)
     {   
         if(!token_)
         {

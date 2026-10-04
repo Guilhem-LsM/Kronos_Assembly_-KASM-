@@ -17,6 +17,8 @@ target_sources(KASM
         libs/token.c
         libs/assembly.c
         libs/range_manager.c
+        libs/logisim_file_manager.c
+        libs/machine_code.c
     PUBLIC 
     FILE_SET HEADERS 
     BASE_DIRS
@@ -31,4 +33,7 @@ target_sources(KASM
         include/token.h
         include/assembly.h
         include/range_manager.h
+        include/logisim_file_manager.h
+        include/machine_code.h
 )
+

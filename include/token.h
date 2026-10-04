@@ -17,7 +17,7 @@ enum TOKEN_TYPE
     _NULL_
 };
 
-const char* TOKEN_TYPE_STRING[10];
+extern const char* const TOKEN_TYPE_STRING[10];
 
 // Struct
 struct token

@@ -114,13 +114,12 @@ static void determine_token_type_and_value(struct token* token_, char* lexeme, i
     }
 }
 
-    // Public
 struct token* tokenize(char* raw_program){
     char lexeme[LEXEME_MAX_SIZE + 1] = ""; // Add +1 to put a \0 at the end of the lexeme
     unsigned int lexeme_index = 0;
     char* char_pointer = raw_program;
-    size_t line = 0;
-    size_t char_ = 0;
+    size_t line = 1;
+    size_t char_ = 1;
     size_t first_char_pos = 0;
     struct token* token_list = NULL;
     struct token* current_token = NULL;
@@ -155,7 +154,7 @@ struct token* tokenize(char* raw_program){
                 else{token_list = new_token_;}
                 current_token = new_token_;
             }
-            else if(*char_pointer == '*'){ error(_UNEXPECTED_AST_, line, char_, 0, 0, 0, ""); printf("d\n");}
+            else if(*char_pointer == '*'){ error(_UNEXPECTED_AST_, line, char_, 0, 0, 0, ""); }
 
             if(*char_pointer == ';')
             {
